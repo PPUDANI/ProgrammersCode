@@ -31,13 +31,11 @@ int solution(std::vector<int> nums) {
 
     for (int i = 0; i < Num; ++i)
     {
-        int sum_i = nums[i];
         for (int j = i + 1; j < Num; ++j)
         {
-            int sum_j = sum_i + nums[j];
             for (int k = j + 1; k < Num; ++k)
             {
-                int sum_k = sum_j + nums[k];
+                int sum_k = nums[i] + nums[j] + nums[k];
                 answer += IsPrimeNumber(sum_k);
             }
         }
