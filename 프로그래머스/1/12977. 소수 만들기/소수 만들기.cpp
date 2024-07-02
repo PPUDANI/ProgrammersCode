@@ -1,22 +1,26 @@
 #include <vector>
 #include <iostream>
-using namespace std;
-
 int IsPrimeNumber(int _Num)
 {
-    for (int i = 2; i <= _Num; ++i)
+    int count = 0;
+    for (int i = 2; i < _Num; ++i)
     {
         if (_Num % i == 0)
         {
-            if (i != _Num)
-            {
-                return 0;
-            }
+            ++count;
         }
     }
 
-    return 1;
+    if (count == 0)
+    {
+        return 1;
+    }
+    else
+    {
+        return 0;
+    }
 }
+
 
 int solution(std::vector<int> nums) {
     int answer = 0;
