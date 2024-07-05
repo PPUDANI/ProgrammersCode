@@ -1,17 +1,14 @@
-#include <string>
 #include <vector>
+#include <iostream>
 
-using namespace std;
-
-string solution(string X, string Y) {
+std::string solution(std::string X, std::string Y) {
     std::string answer = "";
 
     int XLength = static_cast<int>(X.length());
     int YLength = static_cast<int>(Y.length());
 
-    int NumSize = 10;
-    std::vector<int> XNum(NumSize, 0);
-    std::vector<int> YNum(NumSize, 0);
+    std::vector<int> XNum(10, 0);
+    std::vector<int> YNum(10, 0);
 
     for (int i = 0 ; i < XLength; ++i)
     {
@@ -25,9 +22,7 @@ string solution(string X, string Y) {
         ++YNum[Num];
     }
 
-    --NumSize;
-
-    for (int i = NumSize; i >= 0 ; --i)
+    for (int i = 9; i >= 0 ; --i)
     {
         while (XNum[i] > 0 && YNum[i] > 0)
         {
