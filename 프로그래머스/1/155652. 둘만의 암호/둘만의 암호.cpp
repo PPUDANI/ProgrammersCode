@@ -8,16 +8,14 @@ string solution(string s, string skip, int index) {
 
     int sNum = static_cast<int>(s.length());
     int skipNum = static_cast<int>(skip.length());
-    char Alphabet[26];
 
-    for (int i = 0; i < 26; ++i)
-    {
-        Alphabet[i] = 'a' + i;
-    }
+    // 모든 Alphabet을 따로 적재
+    char Alphabet[26] = { 0, };
 
+    // skip에 있는 Alphabet값을 -1로 수정 
     for (int i = 0 ; i < skipNum; ++i)
     {
-        Alphabet[skip[i] - 97] = -1;
+        --Alphabet[skip[i] - 97];
     }
 
     for (int i = 0; i < sNum; ++i)
@@ -39,9 +37,8 @@ string solution(string s, string skip, int index) {
             }
         }
 
-        answer.push_back(Alphabet[CurIndex]);
+        answer.push_back(static_cast<char>(CurIndex + 97));
     }
-
 
     return answer;
 }
