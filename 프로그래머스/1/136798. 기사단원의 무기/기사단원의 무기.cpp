@@ -1,8 +1,6 @@
 #include <string>
 #include <vector>
 
-using namespace std;
-
 int solution(int number, int limit, int power) {
    int answer = 0;
     
