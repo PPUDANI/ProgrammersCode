@@ -5,9 +5,10 @@ using namespace std;
 
 string solution(int n) {
     string answer = "";
-    int N = n / 2;
 
-    for (int i = 0; i < N; ++i)
+    int SooBackNum = n / 2;
+
+    for (int i = 0; i < SooBackNum; ++i)
     {
         answer += "수박";
     }
