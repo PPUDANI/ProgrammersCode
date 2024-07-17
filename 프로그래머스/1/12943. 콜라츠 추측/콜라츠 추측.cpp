@@ -19,12 +19,11 @@ int solution(int num) {
             DNum = ((DNum * 3) + 1) / 2;
             answer += 2;
         }
-    }
 
-    if (answer >= 500)
-    {
-        answer = -1;
+        if (answer >= 500)
+        {
+            return -1;
+        }
     }
-
     return answer;
 }
