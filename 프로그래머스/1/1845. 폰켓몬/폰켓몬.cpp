@@ -1,24 +1,14 @@
 #include <vector>
-#include <set>
+#include <unordered_set>
 using namespace std;
 
 int solution(vector<int> nums)
 {
-    std::set<int> Ponketmons;
-    for (int Ponketmon : nums)
-    {
-        Ponketmons.insert(Ponketmon);
-    }
+    // 중복이 없고 정렬이 필요없는 unordered_set을 사용
+    std::unordered_set<int> Ponketmons(nums.begin(), nums.end());
     
     int MaxNumberOfPick = static_cast<int>(nums.size()) / 2;
     int NumberOfPonketmon = static_cast<int>(Ponketmons.size());
 
-    if (MaxNumberOfPick < NumberOfPonketmon)
-    {
-        return MaxNumberOfPick;
-    }
-    else
-    {
-        return NumberOfPonketmon;
-    }
+    return MaxNumberOfPick < NumberOfPonketmon ? MaxNumberOfPick : NumberOfPonketmon;
 }
