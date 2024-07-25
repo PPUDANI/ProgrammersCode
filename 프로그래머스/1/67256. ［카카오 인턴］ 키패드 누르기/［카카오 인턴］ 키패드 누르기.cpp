@@ -49,15 +49,14 @@ string solution(vector<int> numbers, string hand)
             DistanceOfLeft = DistanceFromCenter[Num][CurLeftHandLocation];
             DistanceOfRight = DistanceFromCenter[Num][CurRightHandLocation];
 
-			if (DistanceOfLeft == DistanceOfRight) 
+            if (DistanceOfLeft == DistanceOfRight)
             {
-                CurMovedHand = HandCheck; 
+                CurMovedHand = HandCheck;
             }
             else
             {
                 CurMovedHand = DistanceOfLeft > DistanceOfRight ? EHAND::RIGHT : EHAND::LEFT;
             }
-
 			break;
 
         default:
