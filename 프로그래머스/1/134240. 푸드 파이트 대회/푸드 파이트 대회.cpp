@@ -6,9 +6,11 @@ using namespace std;
 string solution(vector<int> food)
 {
     std::string answer = "";
-
-    std::vector<std::string> Foods(9, "");
+    
     int NumberOfFoodTypes = static_cast<int>(food.size());
+    
+    std::vector<std::string> Foods(NumberOfFoodTypes, "");
+
 
     for (int i = 0; i < NumberOfFoodTypes; ++i)
     {
