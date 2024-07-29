@@ -3,28 +3,27 @@
 
 using namespace std;
 
-int solution(vector<vector<int>> sizes) {
-    int answer = 0;
-    int VectorNumber = static_cast<int>(sizes.size());
+int solution(vector<vector<int>> sizes) 
+{
+    int NumOfValue = static_cast<int>(sizes.size());
+    int MinSize = 0;
+    int MaxSize = 0;
 
-    int Minimum = 0;
-    int Maximum = 0;
-
-    for (int i = 0; i < VectorNumber; ++i)
+    for (int i = 0; i < NumOfValue; ++i)
     {
-        int CurrentMinimum = sizes[i][0] < sizes[i][1] ? sizes[i][0] : sizes[i][1];
-        int CurrentMaximum = sizes[i][0] < sizes[i][1] ? sizes[i][1] : sizes[i][0];
+        int CurMin = std::min(sizes[i][0], sizes[i][1]);
+        int CurMax = std::max(sizes[i][0], sizes[i][1]);
 
-        if (Minimum < CurrentMinimum)
+        if (MinSize < CurMin)
         {
-            Minimum = CurrentMinimum;
+            MinSize = CurMin;
         }
 
-        if (Maximum < CurrentMaximum)
+        if (MaxSize < CurMax)
         {
-            Maximum = CurrentMaximum;
+            MaxSize = CurMax;
         }
     }
-    answer = Minimum * Maximum;
-    return answer;
+
+    return MinSize * MaxSize;
 }
