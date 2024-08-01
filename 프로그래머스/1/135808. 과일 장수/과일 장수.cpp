@@ -3,7 +3,8 @@
 
 using namespace std;
 
-int solution(int k, int m, vector<int> score) {
+int solution(int k, int m, vector<int> score) 
+{
     int answer = 0;
     std::vector<int> ScoreNumber(k + 1, 0);
 
