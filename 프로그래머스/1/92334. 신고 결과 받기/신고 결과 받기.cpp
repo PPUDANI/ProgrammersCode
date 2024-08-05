@@ -18,7 +18,7 @@ std::vector<int> solution(std::vector<string> id_list, std::vector<string> repor
         Reports[id_list[i]] = i;
     }
 
-    for (std::string str : report)
+    for (const std::string str : report)
     {
         int index = static_cast<int>(str.find(" "));
         std::string Reporter = str.substr(0, index);
@@ -33,7 +33,7 @@ std::vector<int> solution(std::vector<string> id_list, std::vector<string> repor
         int ReportNumber = static_cast<int>(Respondents[CurReporter].size());
         if (k <= ReportNumber)
         {
-            for (std::string Respondent : Respondents[CurReporter])
+            for (const std::string Respondent : Respondents[CurReporter])
             {
                 ++answer[Reports[Respondent]];
             }
