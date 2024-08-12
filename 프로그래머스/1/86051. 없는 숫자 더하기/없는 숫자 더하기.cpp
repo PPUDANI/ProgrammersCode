@@ -4,12 +4,12 @@
 using namespace std;
 
 int solution(vector<int> numbers) {
-    int answer = -1;
+    int answer = 45;
     
     for(int i : numbers)
     {
-        answer += i;
+        answer -= i;
     }
     
-    return 44 - answer;
+    return answer;
 }
