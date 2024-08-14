@@ -3,9 +3,10 @@
 #include <cmath>    
 #include <algorithm>
 
+#define EPSILON 
 bool compare(std::pair<float, int> Left, std::pair<float, int> Right)
 {
-    if (fabs(Left.first - Right.first) < 0.000000000000001)
+    if (fabs(Left.first - Right.first) < 0.00000000001)
     {
         return Left.second < Right.second;
     }
