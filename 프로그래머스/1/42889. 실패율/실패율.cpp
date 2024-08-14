@@ -5,7 +5,7 @@
 
 bool compare(std::pair<float, int> Left, std::pair<float, int> Right)
 {
-    if (Left.first == Right.first)
+    if (fabs(Left.first - Right.first) < 0.000000000000001)
     {
         return Left.second < Right.second;
     }
