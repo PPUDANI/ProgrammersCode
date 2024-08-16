@@ -3,10 +3,11 @@
 #include <cmath>    
 #include <algorithm>
 
-#define EPSILON 
-bool compare(std::pair<float, int> Left, std::pair<float, int> Right)
+#define EPSILON 0.00000000000001
+
+bool compare(std::pair<float, int> Left, std::pair<float, int> Right) // 정렬
 {
-    if (fabs(Left.first - Right.first) < 0.00000000001)
+    if (fabs(Left.first - Right.first) < EPSILON)
     {
         return Left.second < Right.second;
     }
