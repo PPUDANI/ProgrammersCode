@@ -3,6 +3,7 @@
 
 using namespace std;
 
+// 좌표 및 방향을 저장할 클래스 생성
 class Coordinate
 {
 public:
@@ -11,6 +12,7 @@ public:
         X = 0;
         Y = 0;
     };
+
     Coordinate(int _X, int _Y) : X(_X), Y(_Y)
     { 
 
@@ -27,22 +29,13 @@ public:
         return *(this);
     }
 
-    Coordinate operator +(const Coordinate Value) const
-    {
-        Coordinate Res;
-        Res.X += Value.X;
-        Res.Y += Value.Y;
-        return Res;
-    }
-
 private:
 
 };
 
 vector<int> solution(vector<string> park, vector<string> routes) 
 {
-    vector<int> answer = {0, 0};
-
+    // 공원 크기 체크
     int ParkHeight = static_cast<int>(park.size());
     int ParkWidth = static_cast<int>(park[0].length());
 
@@ -50,19 +43,17 @@ vector<int> solution(vector<string> park, vector<string> routes)
     Coordinate CurRobotIndex;
     for (int Y = 0; Y < ParkHeight; ++Y)
     {
-        for (int X = 0; X < ParkWidth; ++X)
+        int X = static_cast<int>(park[Y].find('S'));
+        if (X != string::npos)
         {
-            if (park[Y][X] == 'S')
-            {
-                CurRobotIndex = { X, Y };
-                break;
-            }
+            CurRobotIndex = { X, Y };
+            break;
         }
     }
 
     // 명령 수행
-    int RoutesNum = static_cast<int>(routes.size());
-    for (int i = 0; i < RoutesNum; ++i)
+    int RoutesNumber = static_cast<int>(routes.size());
+    for (int i = 0; i < RoutesNumber; ++i)
     {
         // 방향 체크
         Coordinate Direction;
@@ -90,30 +81,32 @@ vector<int> solution(vector<string> park, vector<string> routes)
         }
 
         // 이동 여부 체크
-        bool IsMoved = true;
+        bool IsMovable = true;
         Coordinate MoveIndex = CurRobotIndex;
         int Distance = static_cast<int>(routes[i][2] - '0');
         for (int j = 0; j < Distance; ++j)
         {
             MoveIndex += Direction;
 
+            // Index 초과 여부 및 장애물 여부 확인
             if (0 > MoveIndex.Y ||
                 0 > MoveIndex.X ||
                 ParkHeight <= MoveIndex.Y ||
                 ParkWidth <= MoveIndex.X ||
                 park[MoveIndex.Y][MoveIndex.X] == 'X')
             {
-                IsMoved = false;
+                IsMovable = false;
                 break;
             }
         }
 
-        if (IsMoved == true)
+        // 이동이 가능하면 위치 수정
+        if (IsMovable == true)
         {
             CurRobotIndex = MoveIndex;
         }
     }
-    answer[0] = CurRobotIndex.Y;
-    answer[1] = CurRobotIndex.X;
-    return answer;
+
+    // 결과 입력
+    return { CurRobotIndex.Y, CurRobotIndex.X };
 }
