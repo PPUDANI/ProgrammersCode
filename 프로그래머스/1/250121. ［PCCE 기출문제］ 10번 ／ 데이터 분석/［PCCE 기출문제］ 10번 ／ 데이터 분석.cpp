@@ -2,14 +2,15 @@
 #include <vector>
 #include <algorithm>
 
-int CheckDataIndex = -1;
 int SortDataIndex = -1;
 
+// sort_by 기준으로 정렬
 bool compare(std::vector<int>& Left, std::vector<int>& Right)
 {
     return Left[SortDataIndex] < Right[SortDataIndex];
 }
 
+// ext, sort_by기준을 index로 반환해주는 함수
 int GetDataIndex(const char _ext)
 {
     switch (_ext)
@@ -29,16 +30,20 @@ std::vector<std::vector<int>> solution(std::vector<std::vector<int>> data, std::
     std::vector<std::vector<int>> answer;
     answer.reserve(data.size());
 
-    CheckDataIndex = GetDataIndex(ext[0]);
+    // ext와 sort_by를 index로 받아옴
+    int CheckDataIndex = GetDataIndex(ext[0]);
     SortDataIndex = GetDataIndex(sort_by[0]);
 
     for (std::vector<int> Data : data)
     {
+        // 받아온 index로 데이터 선별
         if (Data[CheckDataIndex] < val_ext)
         {
             answer.push_back(std::vector<int>{ Data[0], Data[1], Data[2], Data[3] });
         }
     }
+
+    // 정렬
     std::sort(answer.begin(), answer.end(), compare);
   
     return answer;
