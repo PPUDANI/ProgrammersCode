@@ -1,6 +1,5 @@
 #include <string>
 #include <vector>
-#include <algorithm>
 
 using namespace std;
 
@@ -11,10 +10,7 @@ public:
 
     static bool CheckTypeSequence_Left(char _Left)
     {
-        if (_Left == 'R' ||
-            _Left == 'C' ||
-            _Left == 'J' ||
-            _Left == 'A')
+        if (_Left == 'R' || _Left == 'C' || _Left == 'J' || _Left == 'A')
         {
             return true;
         }
@@ -38,19 +34,23 @@ public:
     {
         switch (_Left)
         {
-        case 'R': case 'T':
+        case 'R': 
+        case 'T':
             RT += _Score;
             break;
 
-        case 'C': case 'F':
+        case 'C': 
+        case 'F':
             CF += _Score;
             break;
 
-        case 'J': case 'M':
+        case 'J': 
+        case 'M':
             JM += _Score;
             break;
 
-        case 'A': case 'N':
+        case 'A': 
+        case 'N':
             AN += _Score;
             break;
 
@@ -60,7 +60,6 @@ public:
     }
 
 private:
-
     int RT = 0;
     int CF = 0;
     int JM = 0;
@@ -78,7 +77,6 @@ private:
         }
     }
 };
-
 
 string solution(vector<string> survey, vector<int> choices) 
 {
@@ -98,4 +96,3 @@ string solution(vector<string> survey, vector<int> choices)
 
     return Result.GetMBTI();
 }
-
