@@ -39,7 +39,7 @@ std::vector<std::vector<int>> solution(std::vector<std::vector<int>> data, std::
         // 받아온 index로 데이터 선별
         if (Data[CheckDataIndex] < val_ext)
         {
-            answer.push_back(std::vector<int>{ Data[0], Data[1], Data[2], Data[3] });
+            answer.push_back(Data);
         }
     }
 
