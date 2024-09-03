@@ -9,16 +9,11 @@ vector<string> solution(int n, vector<int> arr1, vector<int> arr2)
 
     for (int i = 0; i < n; ++i)
     {
-        bitset<16> Left(arr1[i]);
-        bitset<16> Right(arr2[i]);
+        bitset<16> BitMap = arr1[i] | arr2[i];
 
         for (int j = n - 1; j >= 0; --j)
         {
-            char AddChar = ' ';
-            if (Left[j] || Right[j] == true)
-            {
-                AddChar = '#';
-            }
+            char AddChar = BitMap[j] == true ? '#' : ' ';
             answer[i] += AddChar;
         }
     }
