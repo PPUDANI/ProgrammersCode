@@ -77,7 +77,7 @@ int solution(vector<string> friends, vector<string> gifts)
         FriendMap[Receiver].ReceiveGift(Giver);
     }
 
-    // 다음달에 받을 선물의 개수 연산
+    // 조건에 따라 다음달에 받을 선물 개수 계산
     vector<int> NextMonthGift(FriendNum, 0);
 
     for (int Left = 0; Left < FriendNum; ++Left)
