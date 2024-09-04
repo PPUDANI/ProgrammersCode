@@ -14,16 +14,10 @@ int solution(vector<int> ingredient)
 
     for (int i = 0; i < NumberOfIngredient; ++i)
     {
-        if (ingredient[i] == 1)
+        if (ingredient[i] == 1 && Burger.top() == 123)
         {
-            if (Burger.top() == 123)
-            {
-                Burger.pop();
-                ++answer;
-                continue;
-            }
-
-            Burger.push(1);
+            Burger.pop();
+            ++answer;
             continue;
         }
 
