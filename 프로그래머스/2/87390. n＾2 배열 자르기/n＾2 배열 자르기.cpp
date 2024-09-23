@@ -13,7 +13,6 @@ vector<int> solution(int n, long long left, long long right) {
     int RightIndexY = right / n;
     int RightIndexX = right % n;
 
-
     for (int Y = LeftIndexY; Y <= RightIndexY; ++Y)
     {
         int Count = (Y == LeftIndexY) ? LeftIndexX : 0;
