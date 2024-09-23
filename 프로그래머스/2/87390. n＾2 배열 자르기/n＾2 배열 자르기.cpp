@@ -20,9 +20,8 @@ vector<int> solution(int n, long long left, long long right) {
 
         for (int X = Count; X < Max_X; ++X)
         {
-            int Eliment = Count < Y ? Y + 1 : X + 1;
+            int Eliment = X < Y ? Y + 1 : X + 1;
             answer.push_back(Eliment);
-            ++Count;
         }
     }
 
