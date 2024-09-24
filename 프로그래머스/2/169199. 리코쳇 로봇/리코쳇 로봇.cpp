@@ -80,7 +80,8 @@ int solution(vector<string> board)
     int BreadthNum = 1; // 너비 크기
     int BreadthCount = 0; // 너비를 탐색한 횟수
 
-    vector<int2> MoveVector = { {-1, 0}, {1, 0}, {0, -1}, {0, 1} };
+    //                          Left     Right   Up       Down
+    vector<int2> DirVector = { {-1, 0}, {1, 0}, {0, -1}, {0, 1} };
 
     while (BFS_Queue.empty() == false)
     {
@@ -89,12 +90,12 @@ int solution(vector<string> board)
         --BreadthNum;
 
         // Left, Right, Up, Down 체크
-        for (int i = 0; i < 4; ++i)
+        for (int2 Dir : DirVector)
         {
             int2 CurIndex = CheckIndex;
             while (true)
             {
-                int2 NextIndex = CurIndex + MoveVector[i];
+                int2 NextIndex = CurIndex + Dir;
                 if (IsIndexOver(NextIndex, BoardSize) || IsBlock(board[NextIndex.Y][NextIndex.X]))
                 {
                     if (board[CurIndex.Y][CurIndex.X] == 'G')
