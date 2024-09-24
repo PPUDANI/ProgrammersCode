@@ -4,6 +4,7 @@
 
 using namespace std;
 
+// 좌표를 담을 구조체
 struct int2
 {
     int X = 0;
@@ -25,6 +26,7 @@ struct int2
     }
 };
 
+// Board 이탈 체크 함수
 bool IsIndexOver(int2 _Check, int2 Max)
 {
     if (_Check.X < 0 || _Check.Y < 0 || _Check.X > Max.X - 1 || _Check.Y > Max.Y - 1)
@@ -35,9 +37,10 @@ bool IsIndexOver(int2 _Check, int2 Max)
     return false;
 }
 
-bool IsBlock(char _Val)
+// 해당 Index가 벽인지 체크
+bool IsBlock(char _Index)
 {
-    if (_Val == 'D')
+    if (_Index == 'D')
     {
         return true;
     }
@@ -68,12 +71,14 @@ int solution(vector<string> board)
         }
     }
 
+    // BFS를 위한 큐 생성 및 Start 삽입
     queue<int2> BFS_Queue;
     BFS_Queue.push(StartIndex);
 
-    int BreadthNum = 1;
-    int BreadthCount = 0;
-    int answer = 1;
+    // 횟수 측정
+    int answer = 1; // 움직인 횟수
+    int BreadthNum = 1; // 너비 크기
+    int BreadthCount = 0; // 너비를 탐색한 횟수
 
     vector<int2> MoveVector = { {-1, 0}, {1, 0}, {0, -1}, {0, 1} };
 
@@ -108,6 +113,7 @@ int solution(vector<string> board)
             }
         }
         
+        // 현재 라인 전부 탐색했다면 다음 라인 탐색
         if (BreadthNum == 0)
         {
             ++answer;
