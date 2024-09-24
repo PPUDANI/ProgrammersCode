@@ -4,29 +4,63 @@
 
 using namespace std;
 
+struct int2
+{
+    int X = 0;
+    int Y = 0;
+
+    int2 operator +(int2 _Val)
+    {
+        int2 Res;
+        Res.X = X + _Val.X;
+        Res.Y = Y + _Val.Y;
+        return Res;
+    }
+
+    int2 operator -=(int2 _Val)
+    {
+        X -= _Val.X;
+        Y -= _Val.Y;
+        return *this;
+    }
+};
+
+bool IsIndexOver(int2 _Check, int2 Max)
+{
+    if (_Check.X < 0 || _Check.Y < 0 || _Check.X > Max.X - 1 || _Check.Y > Max.Y - 1)
+    {
+        return true;
+    }
+
+    return false;
+}
+
+bool IsBlock(char _Val)
+{
+    if (_Val == 'D')
+    {
+        return true;
+    }
+
+    return false;
+}
+
 int solution(vector<string> board)
 {
-    struct int2
-    {
-        int X = 0;
-        int Y = 0;
-    };
+    int2 BoardSize;
+    BoardSize.X = static_cast<int>(board[0].size());
+    BoardSize.Y = static_cast<int>(board.size());
 
+    vector<vector<bool>> Visit(BoardSize.Y, vector<bool>(BoardSize.X, false));
     int2 StartIndex;
 
-    int Index_Y = static_cast<int>(board.size());
-    int Index_X = static_cast<int>(board[0].size());
-
-    vector<vector<bool>> Visit(Index_Y, vector<bool>(Index_X, false));
-
     // 시작위치 찾기 및 NodeIndex매핑
-    for (int Y = 0; Y < Index_Y; ++Y)
+    for (int Y = 0; Y < BoardSize.Y; ++Y)
     {
-        for (int X = 0; X < Index_X; ++X)
+        for (int X = 0; X < BoardSize.X; ++X)
         {
             if (board[Y][X] == 'R')
             {
-                board[Y][X] = '.';
                 Visit[Y][X] = true;
                 StartIndex.X = X;
                 StartIndex.Y = Y;
@@ -41,96 +75,39 @@ int solution(vector<string> board)
     int BreadthCount = 0;
     int answer = 1;
 
+    vector<int2> MoveVector = { {-1, 0}, {1, 0}, {0, -1}, {0, 1} };
+
     while (BFS_Queue.empty() == false)
     {
-        int2 CurIndex = BFS_Queue.front();
+        int2 CheckIndex = BFS_Queue.front();
         BFS_Queue.pop();
         --BreadthNum;
 
-        // Left
-        int2 MovedToLeft = CurIndex;
-        while (true)
+        // Left, Right, Up, Down 체크
+        for (int i = 0; i < 4; ++i)
         {
-            if ((MovedToLeft.X - 1 < 0) || (board[MovedToLeft.Y][MovedToLeft.X - 1] == 'D'))
+            int2 CurIndex = CheckIndex;
+            while (true)
             {
-                if (board[MovedToLeft.Y][MovedToLeft.X] == 'G')
+                int2 NextIndex = CurIndex + MoveVector[i];
+                if (IsIndexOver(NextIndex, BoardSize) || IsBlock(board[NextIndex.Y][NextIndex.X]))
                 {
-                    return answer;
+                    if (board[CurIndex.Y][CurIndex.X] == 'G')
+                    {
+                        return answer;
+                    }
+                    else if (Visit[CurIndex.Y][CurIndex.X] == false)
+                    {
+                        Visit[CurIndex.Y][CurIndex.X] = true;
+                        BFS_Queue.push(CurIndex);
+                        ++BreadthCount;
+                    }
+                    break;
                 }
-                else if (Visit[MovedToLeft.Y][MovedToLeft.X] == false)
-                {
-                    Visit[MovedToLeft.Y][MovedToLeft.X] = true;
-                    BFS_Queue.push(MovedToLeft);
-                    ++BreadthCount;
-                }
-                break;
+                CurIndex = NextIndex;
             }
-            --MovedToLeft.X;
         }
-
-        // Right
-        int2 MovedToRight = CurIndex;
-        while (true)
-        {
-            if ((MovedToRight.X + 1 > Index_X - 1) || (board[MovedToRight.Y][MovedToRight.X + 1] == 'D'))
-            {
-                if (board[MovedToRight.Y][MovedToRight.X] == 'G')
-                {
-                    return answer;
-                }
-                else if (Visit[MovedToRight.Y][MovedToRight.X] == false)
-                {
-                    Visit[MovedToRight.Y][MovedToRight.X] = true;
-                    BFS_Queue.push(MovedToRight);
-                    ++BreadthCount;
-                }
-                break;
-            }
-            ++MovedToRight.X;
-        }
-
-        // Up
-        int2 MovedToUp = CurIndex;
-        while (true)
-        {
-            if ((MovedToUp.Y - 1 < 0) || (board[MovedToUp.Y - 1][MovedToUp.X] == 'D'))
-            {
-                if (board[MovedToUp.Y][MovedToUp.X] == 'G')
-                {
-                    return answer;
-                }
-                else if (Visit[MovedToUp.Y][MovedToUp.X] == false)
-                {
-                    Visit[MovedToUp.Y][MovedToUp.X] = true;
-                    BFS_Queue.push(MovedToUp);
-                    ++BreadthCount;
-                }
-                break;
-            }
-            --MovedToUp.Y;
-        }
-
-        // Down
-        int2 MovedToDown = CurIndex;
-        while (true)
-        {
-            if ((MovedToDown.Y + 1 > Index_Y - 1) || (board[MovedToDown.Y + 1][MovedToDown.X] == 'D'))
-            {
-                if (board[MovedToDown.Y][MovedToDown.X] == 'G')
-                {
-                    return answer;
-                }
-                else if (Visit[MovedToDown.Y][MovedToDown.X] == false)
-                {
-                    Visit[MovedToDown.Y][MovedToDown.X] = true;
-                    BFS_Queue.push(MovedToDown);
-                    ++BreadthCount;
-                }
-                break;
-            }
-            ++MovedToDown.Y;
-        }
-
+        
         if (BreadthNum == 0)
         {
             ++answer;
