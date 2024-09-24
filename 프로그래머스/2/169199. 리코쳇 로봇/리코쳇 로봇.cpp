@@ -34,13 +34,14 @@ int solution(vector<string> board)
         }
     }
 
-
     queue<int2> BFS_Queue;
     BFS_Queue.push(StartIndex);
+
     int BreadthNum = 1;
     int BreadthCount = 0;
     int answer = 1;
-    while (true)
+
+    while (BFS_Queue.empty() == false)
     {
         int2 CurIndex = BFS_Queue.front();
         BFS_Queue.pop();
@@ -135,11 +136,6 @@ int solution(vector<string> board)
             ++answer;
             BreadthNum = BreadthCount;
             BreadthCount = 0;
-        }
-
-        if (BFS_Queue.empty())
-        {
-            break;
         }
     }
     
