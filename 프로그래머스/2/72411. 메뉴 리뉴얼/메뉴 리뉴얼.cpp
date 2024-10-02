@@ -1,100 +1,112 @@
 #include <string>
 #include <vector>
-#include <map>
-#include <set>
+#include <unordered_map>
 #include <algorithm>
 
 using namespace std;
+
+// 재귀로 넘기는 Parameter를 최소화 하기위해 Class로 제작함.
 class Combination_Str
 {
 public:
-    Combination_Str(const string& _Str) 
-        : StrData(_Str)
+    Combination_Str(const string& _Eliments)
+        : Eliments(_Eliments)
     {
-        sort(StrData.begin(), StrData.end(), [](const char _Left, const char _Right)
+        // 생성 시 문자열을 오름차순으로 정렬
+        sort(Eliments.begin(), Eliments.end(), [](const char _Left, const char _Right)
             {
                 return _Left < _Right;
             });
+
+        NumOfElement = static_cast<int>(Eliments.length());
     }
 
-    int GetNumOfMaxCombi()
+    // 가장 많은 조합 리턴
+    inline int GetNumOfMostCombi() const
     {
-        return NumOfMaxCombi;
+        return NumOfMostCombi;
     }
-
-    /*
-    문자열 조합 재귀
-    StrData : A B C F G 이고 _CombiLength : 3 라면
     
-      1.          A             B        C
-      2.     B    C    F      C   F     F
-      3.  C F G  F G  G     F G  G     G
-
-    위와 같이 10개의 조합이 나올 수 있음.
-    */ 
-
- 
-	// 총 10개의 조합이 만들어짐.
-
-    void GetAllCombination(string _CurCombi, int _CombiLength, int _StartIndex, map<string, int>& _Result)
+    void GetAllCombination(int _StartIndex, int _CombiLength, string _CurCombi, unordered_map<string, int>& _Combis)
     {
-        if (_CurCombi.length() == _CombiLength)
+        CombiLength = _CombiLength;
+        int Count = CombiLength - 1;
+        CalculateCombination(_StartIndex, Count, _CurCombi, _Combis);
+    }
+
+    // 재귀 함수
+    void CalculateCombination(int _StartIndex, int _Count, string _CurCombi, unordered_map<string, int>& _Combis)
+    {
+        if (_CurCombi.length() == CombiLength)
         {
-            int NumberOfCurStr = ++_Result[_CurCombi];
-            if (NumOfMaxCombi < NumberOfCurStr)
+            int NumberOfCurStr = ++_Combis[_CurCombi];
+            if (NumOfMostCombi < NumberOfCurStr)
             {
-                NumOfMaxCombi = NumberOfCurStr;
+                NumOfMostCombi = NumberOfCurStr;
             }
             return;
         }
 
-        for (int i = _StartIndex; i < StrData.length(); ++i)
+        if (_Count != 0)
         {
-            GetAllCombination(_CurCombi + StrData[i], _CombiLength, i + 1, _Result);
+            --_Count;
         }
+
+        for (int i = _StartIndex; i < NumOfElement - _Count; ++i)
+        {
+            CalculateCombination(i + 1, _Count, _CurCombi + Eliments[i], _Combis);
+        }
+        return;
     }
 
 private:
-    string StrData;
-    int NumOfMaxCombi = 0;
+    string Eliments;
+    int NumOfElement;
+
+    int CombiLength;
+    int NumOfMostCombi = 0;
 
 };
 
 
 vector<string> solution(vector<string> orders, vector<int> course) 
 {
-    set<string> answer;
+    vector<string> answer;
 
-    for (int CourseSize : course)
+    for (int CourseLength : course)
     {
-        map<string, int> CourseMap;
-        int NumOfMaxCombi = 0;
+        unordered_map<string, int> CourseMap;
+        int NumOfMostCombi = 0;
 
+        // 모든 코스 생성.
         for (const string& Order : orders)
         {
-            Combination_Str CourseCombi(Order);
-            CourseCombi.GetAllCombination("", CourseSize, 0, CourseMap);
-            if (NumOfMaxCombi < CourseCombi.GetNumOfMaxCombi())
-            {
-                NumOfMaxCombi = CourseCombi.GetNumOfMaxCombi();
-            }
+            Combination_Str CombiInst(Order);
+            CombiInst.GetAllCombination(0, CourseLength, "", CourseMap);
+            NumOfMostCombi = max(NumOfMostCombi, CombiInst.GetNumOfMostCombi());
         }
 
-        if (NumOfMaxCombi == 1)
+        // 가장 많이은 조합의 개수가 1이라면 continue.
+        if (NumOfMostCombi == 1)
         {
             continue;
         }
 
+        // 가장 많이은 조합의 개수와 일치하면 적재
         for (const pair<string, int>& Course : CourseMap)
         {
-            if (Course.second == NumOfMaxCombi)
+            if (Course.second == NumOfMostCombi)
             {
-                answer.insert(Course.first);
+                answer.push_back(Course.first);
             }
         }
     }
 
-    vector<string> a(answer.begin(), answer.end());
+    // 정렬
+    sort(answer.begin(), answer.end(), [](const string& _Left, const string& _Right)
+        {
+            return _Left < _Right;
+        });
 
-    return a;
+    return answer;
 }
