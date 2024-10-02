@@ -1,6 +1,7 @@
 #include <string>
 #include <vector>
-#include <unordered_map>
+#include <map>
+#include <set>
 #include <algorithm>
 
 using namespace std;
@@ -10,7 +11,10 @@ public:
     Combination_Str(const string& _Str) 
         : StrData(_Str)
     {
-
+        sort(StrData.begin(), StrData.end(), [](const char _Left, const char _Right)
+            {
+                return _Left < _Right;
+            });
     }
 
     int GetNumOfMaxCombi()
@@ -18,44 +22,54 @@ public:
         return NumOfMaxCombi;
     }
 
-    void GetAllCombination(string _Combi, int _CombiLength, int _Start, unordered_map<string, int>& _Result)
-    {
-        if (_Combi.length() == _CombiLength)
-        {
-            sort(_Combi.begin(), _Combi.end(), [](const char _Left, const char _Right)
-                {
-                    return _Left < _Right;
-                });
+    /*
+    문자열 조합 재귀
+    StrData : A B C F G 이고 _CombiLength : 3 라면
+    
+      1.          A             B        C
+      2.     B    C    F      C   F     F
+      3.  C F G  F G  G     F G  G     G
 
-            int NumberOfCurStr = ++_Result[_Combi];
+    위와 같이 10개의 조합이 나올 수 있음.
+    */ 
+
+ 
+	// 총 10개의 조합이 만들어짐.
+
+    void GetAllCombination(string _CurCombi, int _CombiLength, int _StartIndex, map<string, int>& _Result)
+    {
+        if (_CurCombi.length() == _CombiLength)
+        {
+            int NumberOfCurStr = ++_Result[_CurCombi];
             if (NumOfMaxCombi < NumberOfCurStr)
             {
                 NumOfMaxCombi = NumberOfCurStr;
             }
-
             return;
         }
 
-        for (int i = _Start; i < StrData.length(); ++i)
+        for (int i = _StartIndex; i < StrData.length(); ++i)
         {
-            GetAllCombination(_Combi + StrData[i], _CombiLength, i + 1, _Result);
+            GetAllCombination(_CurCombi + StrData[i], _CombiLength, i + 1, _Result);
         }
     }
 
 private:
     string StrData;
     int NumOfMaxCombi = 0;
+
 };
 
 
 vector<string> solution(vector<string> orders, vector<int> course) 
 {
-    vector<string> answer;
+    set<string> answer;
 
     for (int CourseSize : course)
     {
-        unordered_map<string, int> CourseMap;
+        map<string, int> CourseMap;
         int NumOfMaxCombi = 0;
+
         for (const string& Order : orders)
         {
             Combination_Str CourseCombi(Order);
@@ -71,19 +85,16 @@ vector<string> solution(vector<string> orders, vector<int> course)
             continue;
         }
 
-        for (pair<string, int> Course : CourseMap)
+        for (const pair<string, int>& Course : CourseMap)
         {
             if (Course.second == NumOfMaxCombi)
             {
-                answer.push_back(Course.first);
+                answer.insert(Course.first);
             }
         }
     }
 
-    sort(answer.begin(), answer.end(), [](const string& _Left, const string& _Right)
-        {
-            return _Left < _Right;
-        });
+    vector<string> a(answer.begin(), answer.end());
 
-    return answer;
+    return a;
 }
