@@ -9,8 +9,8 @@ using namespace std;
 class Combination_Str
 {
 public:
-    Combination_Str(const string& _Eliments)
-        : Eliments(_Eliments)
+    Combination_Str(const string& _Eliments, const int _CombiLength)
+        : Eliments(_Eliments), CombiLength(_CombiLength)
     {
         // 생성 시 문자열을 오름차순으로 정렬
         sort(Eliments.begin(), Eliments.end(), [](const char _Left, const char _Right)
@@ -27,35 +27,32 @@ public:
         return NumOfMostCombi;
     }
     
-    void GetAllCombination(int _StartIndex, int _CombiLength, string _CurCombi, unordered_map<string, int>& _Combis)
+    void GetAllCombination(int _StartIndex, string _CurCombi, unordered_map<string, int>& _Combis)
     {
-        CombiLength = _CombiLength;
-        int Count = CombiLength - 1;
-        CalculateCombination(_StartIndex, Count, _CurCombi, _Combis);
+        int _DigitCount = CombiLength - 1;
+        CalculateCombination(_StartIndex, _DigitCount, _CurCombi, _Combis);
     }
 
     // 재귀 함수
-    void CalculateCombination(int _StartIndex, int _Count, string _CurCombi, unordered_map<string, int>& _Combis)
+    void CalculateCombination(int _StartIndex, int _DigitCount, string _CurCombi, unordered_map<string, int>& _Combis)
     {
         if (_CurCombi.length() == CombiLength)
         {
             int NumberOfCurStr = ++_Combis[_CurCombi];
-            if (NumOfMostCombi < NumberOfCurStr)
-            {
-                NumOfMostCombi = NumberOfCurStr;
-            }
+            NumOfMostCombi = max(NumOfMostCombi, NumberOfCurStr);
             return;
         }
 
-        if (_Count != 0)
+        if (_DigitCount > 0)
         {
-            --_Count;
+            --_DigitCount;
         }
 
-        for (int i = _StartIndex; i < NumOfElement - _Count; ++i)
+        for (int i = _StartIndex; i < NumOfElement - _DigitCount; ++i)
         {
-            CalculateCombination(i + 1, _Count, _CurCombi + Eliments[i], _Combis);
+            CalculateCombination(i + 1, _DigitCount, _CurCombi + Eliments[i], _Combis);
         }
+
         return;
     }
 
@@ -81,8 +78,8 @@ vector<string> solution(vector<string> orders, vector<int> course)
         // 모든 코스 생성.
         for (const string& Order : orders)
         {
-            Combination_Str CombiInst(Order);
-            CombiInst.GetAllCombination(0, CourseLength, "", CourseMap);
+            Combination_Str CombiInst(Order, CourseLength);
+            CombiInst.GetAllCombination(0, "", CourseMap);
             NumOfMostCombi = max(NumOfMostCombi, CombiInst.GetNumOfMostCombi());
         }
 
