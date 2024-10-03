@@ -14,7 +14,6 @@ public:
     union
     {
         int LRUD[4];
-        int Arr[4];
         struct
         {
             int Left;
@@ -35,36 +34,18 @@ public:
     }
 };
 
-int4 GetAcsIndex(int4 _Val)
-{
-    int4 MinSort(0, 1, 2, 3);
-    int Min = 2147483647;
-    int MinIndex = -1;
-
-    for (int i = 0; i < 3; ++i)
-    {
-        for (int j = i + 1; j < 4; ++j)
-        {
-            if (_Val.Arr[i] > _Val.Arr[j])
-            {
-                swap(_Val.Arr[i], _Val.Arr[j]);
-                swap(MinSort.Arr[i], MinSort.Arr[j]);
-            }
-        }
-    }
-
-    return MinSort;
-}
-
 vector<int> solution(int m, int n, int startX, int startY, vector<vector<int>> balls)
 {
     vector<int> answer;
-    int4 Start(startX, m - startX, n - startY, startY);
 
+    // 흰 공의 위치와 4방향의 쿠션과의 거리값
+    int4 Start(startX, m - startX, n - startY, startY);
     for (vector<int> Ball : balls)
     {
+        // Target의 위치와 4방향의 쿠션과의 거리값
         int4 Target(Ball[0], m - Ball[0], n - Ball[1], Ball[1]);
 
+        // Start와 Target의 한 축이 겹친다면 갈 수 없는 방향 체크
         int ImmovableCushionDir = -1;
         if (startX == Ball[0])
         {
@@ -75,21 +56,18 @@ vector<int> solution(int m, int n, int startX, int startY, vector<vector<int>> b
             ImmovableCushionDir = startX > Ball[0] ? 0 : 1;
         }
 
+        // 갈 수 없는 방향을 제외한 나머지 방향의 거리를 구하여 최소값 색출
         int4 Sum = Start + Target;
-        //int4 AcsSumIndex = GetAcsIndex(Sum);
-
-        //int NearDirIndex = AcsSumIndex.Arr[0] != ImmovableCushionDir ? AcsSumIndex.Arr[0] : AcsSumIndex.Arr[1];
         int MinDistance = 2147483647;
-        for (int j = 0; j < 4; ++j)
+        for (int i = 0; i < 4; ++i)
         {
-            if (j == ImmovableCushionDir)
+            if (i == ImmovableCushionDir)
             {
                 continue;
             }
             
             int StartToTarget = 0;
-
-			switch (j)
+			switch (i)
 			{
 			case 0: case 1:
 				StartToTarget = abs(startY - Ball[1]);
@@ -99,9 +77,10 @@ vector<int> solution(int m, int n, int startX, int startY, vector<vector<int>> b
 				break;
 			}
 
-            int Result = pow(Sum.LRUD[j], 2) + pow(StartToTarget, 2);
+            int Result = pow(Sum.LRUD[i], 2) + pow(StartToTarget, 2);
             MinDistance = min(Result, MinDistance);
         }
+
         answer.push_back(MinDistance);
     }
 
