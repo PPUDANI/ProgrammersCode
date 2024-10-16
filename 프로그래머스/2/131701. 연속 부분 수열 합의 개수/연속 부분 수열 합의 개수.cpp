@@ -1,13 +1,11 @@
 #include <string>
 #include <vector>
 #include <set>
-#include <numeric>
+
 using namespace std;
 
-
-int solution(vector<int> elements) 
+int solution(vector<int> elements)
 {
-    int answer = 0;
     int ElementsNum = static_cast<int>(elements.size());
 
     set<int> Nums;
@@ -17,17 +15,13 @@ int solution(vector<int> elements)
     {
         for (int j = 0; j < ElementsNum; ++j)
         {
-            int NextNum = j + i;
-            if (NextNum >= ElementsNum)
-            {
-                NextNum %= ElementsNum;
-            }
-
+            int NextNum = (j + i) % ElementsNum;
             Num[j] += elements[NextNum];
         }
 
         Nums.insert(Num.begin(), Num.end());
     }
-    
-    return Nums.size() + 1;
+
+    int answer = Nums.size() + 1;
+    return answer;
 }
