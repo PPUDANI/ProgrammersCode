@@ -4,54 +4,61 @@
 
 using namespace std;
 
-struct Edge {
-    int destination;
-    int cost;
+class Edge {
+public:
+    int Distnation;
+    int Cost;
+
+    bool operator > (const Edge& _Value) const
+    {
+        return Cost > _Value.Cost;
+    }
 };
 
-vector<int> dijkstra(int N, vector<vector<Edge>>& graph, int start) {
-    vector<int> dist(N + 1, 1e9);
-    priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> pq;
+int solution(int N, vector<vector<int>> road, int K) 
+{
+    vector<vector<Edge>> Graph(N + 1);
 
-    dist[start] = 0;
-    pq.push({0, start});
+    for (const vector<int>& RoadInfo : road)
+    {
+        Graph[RoadInfo[0]].push_back({ RoadInfo[1], RoadInfo[2] });
+        Graph[RoadInfo[1]].push_back({ RoadInfo[0], RoadInfo[2] });
+    }
 
-    while (!pq.empty()) {
-        int curDist = pq.top().first;
-        int curNode = pq.top().second;
-        pq.pop();
+    vector<int> CostToNode(N + 1, INT32_MAX);
+    priority_queue<Edge, vector<Edge>, greater<Edge>> BFS_PQ;
 
-        if (curDist > dist[curNode]) continue;
+    CostToNode[1] = 0;
+    BFS_PQ.push({ 1, 0 });
 
-        for (const auto& edge : graph[curNode]) {
-            int nextNode = edge.destination;
-            int newDist = curDist + edge.cost;
+    while (!BFS_PQ.empty())
+    {
+        Edge CurEdge = BFS_PQ.top();
+        BFS_PQ.pop();
 
-            if (newDist < dist[nextNode]) {
-                dist[nextNode] = newDist;
-                pq.push({newDist, nextNode});
+        if (CurEdge.Cost > CostToNode[CurEdge.Distnation])
+        {
+            continue;
+        }
+
+        for (Edge DistNode : Graph[CurEdge.Distnation])
+        {
+            DistNode.Cost += CostToNode[CurEdge.Distnation];
+
+            if (DistNode.Cost < CostToNode[DistNode.Distnation])
+            {
+                CostToNode[DistNode.Distnation] = DistNode.Cost;
+                BFS_PQ.push(DistNode);
             }
         }
     }
 
-    return dist;
-}
-
-int solution(int N, vector<vector<int>> road, int K) {
-    vector<vector<Edge>> graph(N + 1);
-
-    for (const auto& r : road) {
-        int a = r[0], b = r[1], c = r[2];
-        graph[a].push_back({b, c});
-        graph[b].push_back({a, c});
-    }
-
-    vector<int> dist = dijkstra(N, graph, 1);
-
     // K 이하로 배달 가능한 마을 수 카운트
     int answer = 0;
-    for (int i = 1; i <= N; ++i) {
-        if (dist[i] <= K) {
+    for (int i = 1; i <= N; ++i) 
+    {
+        if (CostToNode[i] <= K)
+        {
             answer++;
         }
     }
