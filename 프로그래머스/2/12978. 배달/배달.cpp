@@ -54,8 +54,8 @@ int solution(int N, vector<vector<int>> road, int K)
     }
 
     // K 이하로 배달 가능한 마을 수 카운트
-    int answer = 0;
-    for (int i = 1; i <= N; ++i) 
+    int answer = 1;
+    for (int i = 2; i <= N; ++i) 
     {
         if (CostToNode[i] <= K)
         {
