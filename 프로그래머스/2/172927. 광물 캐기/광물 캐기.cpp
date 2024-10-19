@@ -14,6 +14,7 @@ public:
 
     }
 
+    // index로도 접근할 수 있게 union을 사용함.
     union
     {
         int Mineral[3];
@@ -38,17 +39,18 @@ public:
         Stone += StonePickCost > 0 ? StonePickCost : 1;
     }
 
+    // priority_queue의 우선순위 때문에 만듦
     bool operator < (const MineralCost& _Value) const 
     {
         if (Stone == _Value.Stone)
         {
             if (Iron == _Value.Iron)
             {
-                return Diamond > _Value.Diamond;
+                return Diamond < _Value.Diamond;
             }
-            return Iron > _Value.Iron;
+            return Iron < _Value.Iron;
         }
-        return Stone > _Value.Stone;
+        return Stone < _Value.Stone;
     }
 };
 
@@ -64,9 +66,9 @@ int solution(vector<int> picks, vector<string> minerals)
     int AllPickax = picks[0] + picks[1] + picks[2];
     int MaxNumToMine = NumOfMineral < (AllPickax * 5) ? NumOfMineral : (AllPickax * 5);
 
-    // i를 한번 더 돌릴 생각 해야함.
-    priority_queue<MineralCost> CostOfSets;
 
+    // 광물을 5개씩 집합으로 나누어 각 곡괭이로 캘 때 필요한 피로도 계산 및 저장
+    priority_queue<MineralCost> CostOfSets;
     int MaxSet = (MaxNumToMine / 5) * 5;
     for (int i = 0; i < MaxSet; i += 5)
     {
@@ -80,6 +82,7 @@ int solution(vector<int> picks, vector<string> minerals)
         CurSetCost = MineralCost();
     }
 
+    // 5개씩 캐면 남는 광물이 존재할 수 있으므로 남은 광물까지 캠.
     if (MaxSet != MaxNumToMine)
     {
         MineralCost EndSetCost = MineralCost();
@@ -91,31 +94,19 @@ int solution(vector<int> picks, vector<string> minerals)
         CostOfSets.push(EndSetCost);
     }
 
-    MineralCost UsePickax = MineralCost();
-    int SetSize = static_cast<int>(CostOfSets.size());
-    for (int i = 0; i < 3; ++i)
-    {
-        if (picks[i] <= SetSize)
-        {
-            SetSize -= picks[i];
-            UsePickax.Mineral[i] += picks[i];
-        }
-        else
-        {
-            UsePickax.Mineral[i] += SetSize;
-            break;
-        }
-    }
-
+    // 정렬된 집합을 효율이 낮은 순으로 피로도가 적게 사용되는 값을 구해 (이미 priority_queue로 정럴됨)
     int answer = 0;
-    for (int i = 2; i >= 0; --i)
+    int CurPickaxIndex = 0;
+    while (!CostOfSets.empty())
     {
-        while (UsePickax.Mineral[i] > 0)
+        while (picks[CurPickaxIndex] == 0)
         {
-            answer += CostOfSets.top().Mineral[i];
-            CostOfSets.pop();
-            --UsePickax.Mineral[i];
+            ++CurPickaxIndex;
         }
+
+        answer += CostOfSets.top().Mineral[CurPickaxIndex];
+        CostOfSets.pop();
+        --picks[CurPickaxIndex];
     }
 
     return answer;
