@@ -14,27 +14,22 @@ int solution(int n, vector<vector<int>> results)
         Graph[Winner][Loser] = 1;
         Graph[Loser][Winner] = -1;
     }
-    for (int i = 0; i < 2; ++i)
+
+
+    for (int k = 1; k <= n; ++k) 
     {
-        for (int Winner = 1; Winner <= n; ++Winner)
+        for (int i = 1; i <= n; ++i) 
         {
-            for (int Loser = 1; Loser <= n; ++Loser)
+            for (int j = 1; j <= n; ++j) 
             {
-                if (Graph[Winner][Loser] == 1)
+                if (Graph[i][k] == 1 && Graph[k][j] == 1) 
                 {
-                    for (int MoreLoser = 1; MoreLoser <= n; ++MoreLoser)
-                    {
-                        if (Graph[Loser][MoreLoser] == 1)
-                        {
-                            Graph[Winner][MoreLoser] = 1;
-                            Graph[MoreLoser][Winner] = -1;
-                        }
-                    }
+                    Graph[i][j] = 1;
+                    Graph[j][i] = -1; // j는 i에게 진다
                 }
             }
         }
     }
-    
 
     int answer = 0;
     for (int i = 1; i <= n; ++i)
@@ -42,7 +37,7 @@ int solution(int n, vector<vector<int>> results)
         int UnableToRank = 0;
         for (int j = 1; j <= n; ++j)
         {
-            if (i != j && Graph[i][j] != 0)
+            if (Graph[i][j] != 0)
             {
                 ++UnableToRank;
             }
@@ -56,3 +51,4 @@ int solution(int n, vector<vector<int>> results)
 
     return answer;
 }
+
