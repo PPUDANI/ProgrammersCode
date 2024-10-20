@@ -14,35 +14,35 @@ int solution(int n, vector<vector<int>> results)
         Graph[Winner][Loser] = 1;
         Graph[Loser][Winner] = -1;
     }
-    for (int m = 0; m < 2; ++m)
+    for (int i = 0; i < 2; ++i)
     {
-        for (int i = 1; i <= n; ++i)
+        for (int Winner = 1; Winner <= n; ++Winner)
         {
-            for (int j = 1; j <= n; ++j)
+            for (int Loser = 1; Loser <= n; ++Loser)
             {
-                if (Graph[i][j] == 1)
+                if (Graph[Winner][Loser] == 1)
                 {
-                    for (int k = 1; k <= n; ++k)
+                    for (int MoreLoser = 1; MoreLoser <= n; ++MoreLoser)
                     {
-                        if (Graph[j][k] == 1)
+                        if (Graph[Loser][MoreLoser] == 1)
                         {
-                            Graph[i][k] = 1;
-                            Graph[k][i] = -1;
+                            Graph[Winner][MoreLoser] = 1;
+                            Graph[MoreLoser][Winner] = -1;
                         }
                     }
                 }
             }
         }
-
     }
+    
 
     int answer = 0;
-    int UnableToRank = 0;
     for (int i = 1; i <= n; ++i)
     {
+        int UnableToRank = 0;
         for (int j = 1; j <= n; ++j)
         {
-            if (Graph[i][j] != 0)
+            if (i != j && Graph[i][j] != 0)
             {
                 ++UnableToRank;
             }
@@ -52,8 +52,6 @@ int solution(int n, vector<vector<int>> results)
         {
             ++answer;
         }
-
-        UnableToRank = 0;
     }
 
     return answer;
