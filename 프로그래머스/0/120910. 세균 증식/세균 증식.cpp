@@ -4,12 +4,8 @@
 using namespace std;
 
 int solution(int n, int t) {
-    int answer =  n;
+    int answer =  n * pow(2, t);
     
-    for(int i = 0; i < t; ++i)
-    {
-        answer = answer * 2;
-    }
    
     return answer;
 }
