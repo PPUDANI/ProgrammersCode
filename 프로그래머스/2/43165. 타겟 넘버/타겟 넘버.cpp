@@ -1,40 +1,34 @@
-#include <string>
 #include <vector>
-#include <queue>
-
-
+#include <stack>
 using namespace std;
 
-int solution(vector<int> numbers, int target) 
+int solution(vector<int> numbers, int target)
 {
     int answer = 0;
     int ArrSize = int(numbers.size());
 
-    //         idx  sum
-    queue<pair<int, int>> BFS_Q;
-    
-    BFS_Q.push({0, numbers[0]});
-    BFS_Q.push({0, -numbers[0]});
-    
-    while(!BFS_Q.empty())
-    {
-        int CurIndex = BFS_Q.front().first;
-        int CurSum = BFS_Q.front().second;
+    stack<pair<int, int>, vector<pair<int, int>>> DFS_Stack;
 
-        BFS_Q.pop();
-        
-        if(ArrSize == ++CurIndex)
+    DFS_Stack.push({ 0, numbers[0]});
+    DFS_Stack.push({ 0, -numbers[0] });
+
+    while (!DFS_Stack.empty())
+    {
+        int NextIndex = DFS_Stack.top().first + 1;
+        int StackOfNum = DFS_Stack.top().second;
+        DFS_Stack.pop();
+
+        if (NextIndex == ArrSize)
         {
-            if(CurSum == target)
+            if (StackOfNum == target)
             {
                 ++answer;
-                continue;
             }
         }
         else
         {
-            BFS_Q.push({CurIndex, CurSum + numbers[CurIndex]});
-            BFS_Q.push({CurIndex, CurSum - numbers[CurIndex]});
+            DFS_Stack.push({ NextIndex, StackOfNum + numbers[NextIndex] });
+            DFS_Stack.push({ NextIndex, StackOfNum - numbers[NextIndex] });
         }
     }
 
