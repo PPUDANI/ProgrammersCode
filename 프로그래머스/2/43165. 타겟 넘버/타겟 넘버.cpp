@@ -1,15 +1,13 @@
 #include <vector>
-#include <queue>
 #include <stack>
 using namespace std;
-
 
 int solution(vector<int> numbers, int target)
 {
     int answer = 0;
     int ArrSize = int(numbers.size());
 
-    stack<pair<int, int>> DFS_Stack;
+    stack<pair<int, int>, vector<pair<int, int>>> DFS_Stack;
 
     //             Index   Stack
     DFS_Stack.push({ 0, numbers[0]});
