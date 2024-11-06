@@ -1,12 +1,11 @@
 #include <string>
 #include <vector>
-#include <list>
-#include <queue>
+#include <stack>
 #include <algorithm>
 
 using namespace std;
 
-
+#define INF 1000;
 int solution(string begin, string target, vector<string> words)
 {
     int NumOfWord = int(words.size());
@@ -30,21 +29,29 @@ int solution(string begin, string target, vector<string> words)
     ++NumOfWord;
 
     // pair<pair<index, ChangeCount>, VisitCheck>
-    queue<pair<pair<int, int>, vector<bool>>, list<pair<pair<int, int>, vector<bool>>>> BFS;
-    vector<bool> VisitCheck(NumOfWord, false);
-    VisitCheck[NumOfWord - 1] = true;
-    BFS.push({ {NumOfWord - 1, 0}, VisitCheck });
+    stack<pair<pair<int, int>, vector<uint8_t>>, vector<pair<pair<int, int>, vector<uint8_t>>>> DFS;
+    vector<uint8_t> VisitCheck(NumOfWord, false);
 
-    while (!BFS.empty())
+    VisitCheck[NumOfWord - 1] = true;
+    DFS.push({ {NumOfWord - 1, 0}, VisitCheck });
+
+    int answer = INF;
+    while (!DFS.empty())
     {
-        int CurIndex = BFS.front().first.first;
-        int CurCount = BFS.front().first.second;
-        vector<bool> CurVisit = BFS.front().second;
-        BFS.pop();
+        int CurIndex = DFS.top().first.first;
+        int CurCount = DFS.top().first.second;
+        vector<uint8_t> CurVisit = DFS.top().second;
+        DFS.pop();
+
+        if (answer <= CurCount)
+        {
+            continue;
+        }
 
         if (target == words[CurIndex])
         {
-            return CurCount;
+            answer = min(answer, CurCount);
+            continue;
         }
 
         for (int i = 0; i < NumOfWord; ++i)
@@ -64,11 +71,11 @@ int solution(string begin, string target, vector<string> words)
                 if (SameWordCount == WordLength - 1)
                 {
                     CurVisit[i] = true;
-                    BFS.push({ {i, CurCount + 1}, CurVisit });
+                    DFS.push({ {i, CurCount + 1}, CurVisit });
                 }
             }
         }
     }
 
-    return 0;
+    return answer;
 }
