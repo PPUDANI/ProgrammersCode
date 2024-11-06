@@ -1,80 +1,74 @@
 #include <string>
 #include <vector>
-#include <stack>
+#include <list>
+#include <queue>
 #include <algorithm>
 
 using namespace std;
 
-#define INF 1000;
-int solution(string begin, string target, vector<string> words) 
+
+int solution(string begin, string target, vector<string> words)
 {
     int NumOfWord = int(words.size());
     int WordLength = int(begin.length());
-    
+
     bool CanChange = false;
-    for(int i = 0; i < NumOfWord; ++i)
+    for (int i = 0; i < NumOfWord; ++i)
     {
-        if(words[i] == target)
+        if (words[i] == target)
         {
             CanChange = true;
         }
     }
-    
-    if(CanChange == false)
+
+    if (CanChange == false)
     {
         return 0;
     }
-    
+
     words.push_back(begin);
     ++NumOfWord;
-    
+
     // pair<pair<index, ChangeCount>, VisitCheck>
-    stack<pair<pair<int, int>, vector<bool>>, vector<pair<pair<int, int>, vector<bool>>>> DFS;
+    queue<pair<pair<int, int>, vector<bool>>, list<pair<pair<int, int>, vector<bool>>>> BFS;
     vector<bool> VisitCheck(NumOfWord, false);
     VisitCheck[NumOfWord - 1] = true;
-    DFS.push({{NumOfWord - 1, 0}, VisitCheck});
+    BFS.push({ {NumOfWord - 1, 0}, VisitCheck });
 
-    int answer = INF;
-    while(!DFS.empty())
+    while (!BFS.empty())
     {
-        int CurIndex = DFS.top().first.first;
-        int CurCount = DFS.top().first.second;
-        vector<bool> CurVisit = DFS.top().second;
-        DFS.pop();
-        
-        if(answer <= CurCount)
+        int CurIndex = BFS.front().first.first;
+        int CurCount = BFS.front().first.second;
+        vector<bool> CurVisit = BFS.front().second;
+        BFS.pop();
+
+        if (target == words[CurIndex])
         {
-            continue;
+            return CurCount;
         }
-        
-        if(target == words[CurIndex])
+
+        for (int i = 0; i < NumOfWord; ++i)
         {
-            answer = min(answer, CurCount);
-            continue;
-        }
-        
-        for(int i = 0; i < NumOfWord; ++i)
-        {
-            if(CurVisit[i] == false)
+            if (CurVisit[i] == false)
             {
                 // Same Word Check
                 int SameWordCount = 0;
-                for(int j = 0; j < WordLength; ++j)
+                for (int j = 0; j < WordLength; ++j)
                 {
-                    if(words[CurIndex][j] == words[i][j])
+                    if (words[CurIndex][j] == words[i][j])
                     {
                         ++SameWordCount;
                     }
                 }
-                
-                if(SameWordCount == WordLength - 1)
+
+                if (SameWordCount == WordLength - 1)
                 {
                     CurVisit[i] = true;
-                    DFS.push({{i, CurCount + 1}, CurVisit});
+                    BFS.push({ {i, CurCount + 1}, CurVisit });
                 }
             }
         }
     }
-    
-    return answer;
+
+    return 0;
 }
