@@ -1,63 +1,55 @@
 #include <string>
 #include <vector>
 #include <stack>
+#include <algorithm>
+
 using namespace std;
 
-#define INF 100;
+#define INF 1000;
 int solution(string begin, string target, vector<string> words) 
 {
     int NumOfWord = int(words.size());
     int WordLength = int(begin.length());
     
-    // Target Check
-    bool AbleChangeWord = false;
+    bool CanChange = false;
     for(int i = 0; i < NumOfWord; ++i)
     {
         if(words[i] == target)
         {
-            AbleChangeWord = true;
+            CanChange = true;
         }
     }
-        
-    if(AbleChangeWord == false)
+    
+    if(CanChange == false)
     {
         return 0;
     }
     
+    words.push_back(begin);
+    ++NumOfWord;
     
-    stack <pair<pair<int, int>, vector<bool>>, vector<pair<pair<int, int>, vector<bool>>>> DFS;
-    vector<bool> Visit(NumOfWord, false);
-    
-    // First Element
-    for(int i = 0; i < NumOfWord; ++i)
-    {
-        int DifCount = 0;
-        for(int j = 0; j < WordLength; ++j)
-        {
-            if(words[i][j] != begin[j])
-            {
-                ++DifCount;
-            }
-        }
-        
-        if(DifCount == 1)
-        {
-            Visit[i] = true;
-            DFS.push({{i, 1}, Visit});
-        }
-    }
-
+    // pair<pair<index, ChangeCount>, VisitCheck>
+    stack<pair<pair<int, int>, vector<bool>>, vector<pair<pair<int, int>, vector<bool>>>> DFS;
+    vector<bool> VisitCheck(NumOfWord, false);
+    VisitCheck[NumOfWord - 1] = true;
+    DFS.push({{NumOfWord - 1, 0}, VisitCheck});
 
     int answer = INF;
     while(!DFS.empty())
     {
-        auto CurInfo = DFS.top().first;
-        auto CurVisit = DFS.top().second;
+        int CurIndex = DFS.top().first.first;
+        int CurCount = DFS.top().first.second;
+        vector<bool> CurVisit = DFS.top().second;
         DFS.pop();
         
-        if(words[CurInfo.first] == target)
+        if(answer <= CurCount)
         {
-            answer = min(answer, CurInfo.second);
+            continue;
+        }
+        
+        if(target == words[CurIndex])
+        {
+            answer = min(answer, CurCount);
             continue;
         }
         
@@ -65,19 +57,20 @@ int solution(string begin, string target, vector<string> words)
         {
             if(CurVisit[i] == false)
             {
-                int DifCount = 0;
+                // Same Word Check
+                int SameWordCount = 0;
                 for(int j = 0; j < WordLength; ++j)
                 {
-                    if(words[CurInfo.first][j] != words[i][j])
+                    if(words[CurIndex][j] == words[i][j])
                     {
-                        ++DifCount;
+                        ++SameWordCount;
                     }
                 }
                 
-                if(DifCount == 1)
+                if(SameWordCount == WordLength - 1)
                 {
                     CurVisit[i] = true;
-                    DFS.push({{i, CurInfo.second + 1}, CurVisit});
+                    DFS.push({{i, CurCount + 1}, CurVisit});
                 }
             }
         }
