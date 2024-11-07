@@ -1,6 +1,6 @@
-#include <iostream>
 #include <vector>
 #include <queue>
+
 using namespace std;
 
 #define INF 999999
@@ -8,16 +8,16 @@ using namespace std;
 int solution(int N, vector<vector<int> > road, int K) 
 {
     vector<vector<pair<int, int>>> Graph(N + 1);
-    for(auto Edge : road)
+    for(vector<int> RoadInfo : road)
     {
-        int From = Edge[0];
-        int To = Edge[1];
-        int Cost = Edge[2];
+        int From = RoadInfo[0];
+        int To = RoadInfo[1];
+        int Cost = RoadInfo[2];
         
         Graph[From].push_back({Cost, To});
         Graph[To].push_back({Cost, From});
     }
-    
+    //                 cost, Node
     priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> PQ;
     vector<int> CostToNode(N + 1, INF);
     
@@ -28,18 +28,18 @@ int solution(int N, vector<vector<int> > road, int K)
     {
         int CurCost = PQ.top().first;
         int CurNode = PQ.top().second;
-        
         PQ.pop();
         
-        if(CurCost > CostToNode[CurNode])
+        if(CostToNode[CurNode] < CurCost)
         {
             continue;
         }
         
         for(auto Edge : Graph[CurNode])
         {
-            int NewCost = Edge.first + CurCost;
             int NextNode = Edge.second;
+            int NewCost = CurCost + Edge.first;
+            
             if(CostToNode[NextNode] > NewCost)
             {
                 CostToNode[NextNode] = NewCost;
