@@ -13,23 +13,25 @@ int solution(int m, int n, vector<vector<int>> puddles)
     {
         TileMap[puddle[1] - 1][puddle[0] - 1] = PUDDLE;
     }
-    int YBaseCase = 1;
+    
+    int BaseCase = 1;
     for(int i = 1; i < n; ++i)
     {
         if(TileMap[i][0] == PUDDLE)
         {
-            YBaseCase = 0;
+            BaseCase = 0;
         }
-        TileMap[i][0] = YBaseCase;
+        TileMap[i][0] = BaseCase;
     }
-    int XBaseCase = 1;
+    
+    BaseCase = 1;
     for(int j = 1; j < m; ++j)
     {
         if(TileMap[0][j] == PUDDLE)
         {
-            XBaseCase = 0;
+            BaseCase = 0;
         }
-        TileMap[0][j] = XBaseCase;
+        TileMap[0][j] = BaseCase;
     }
     
     for(int i = 1; i < n; ++i)
@@ -40,9 +42,8 @@ int solution(int m, int n, vector<vector<int>> puddles)
             {
                 continue;
             }
-            int Up = TileMap[i - 1][j] % 1000000007;
-            int Left = TileMap[i][j - 1] % 1000000007;
-            TileMap[i][j] = (Up + Left) % 1000000007;
+            
+            TileMap[i][j] = (TileMap[i - 1][j] + TileMap[i][j - 1]) % 1000000007;
         }
     }
     
