@@ -1,60 +1,56 @@
+#include <iostream>
 #include <vector>
 #include <queue>
-
 using namespace std;
 
-#define INF 999999
-
+#define MAX_COST 999999
 int solution(int N, vector<vector<int> > road, int K) 
 {
     vector<vector<pair<int, int>>> Graph(N + 1);
+    
     for(vector<int> RoadInfo : road)
     {
         int From = RoadInfo[0];
         int To = RoadInfo[1];
         int Cost = RoadInfo[2];
-        
         Graph[From].push_back({Cost, To});
         Graph[To].push_back({Cost, From});
     }
-    //                 cost, Node
-    priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> PQ;
-    vector<int> CostToNode(N + 1, INF);
     
+    priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> PQ;
+    vector<int> CostToNode(N+1, MAX_COST);
     PQ.push({0, 1});
     CostToNode[1] = 0;
-    
     while(!PQ.empty())
     {
-        int CurCost = PQ.top().first;
         int CurNode = PQ.top().second;
+        int CurCost = PQ.top().first;
         PQ.pop();
-        
-        if(CostToNode[CurNode] < CurCost)
+        if(CostToNode[CurNode] > CurCost)
         {
             continue;
         }
         
-        for(auto Edge : Graph[CurNode])
+        for(auto Next : Graph[CurNode])
         {
-            int NextNode = Edge.second;
-            int NewCost = CurCost + Edge.first;
-            
-            if(CostToNode[NextNode] > NewCost)
+            int NextNode = Next.second;
+            int NewDist = Next.first + CurCost;
+            if(NewDist < CostToNode[NextNode])
             {
-                CostToNode[NextNode] = NewCost;
-                PQ.push({NewCost, NextNode});
+                CostToNode[NextNode] = NewDist;
+                PQ.push({NewDist, NextNode});
             }
         }
     }
     
-    int answer = 1;
-    for(int i = 2; i <= N; ++i)
+    int answer = 0;
+    for(int Cost : CostToNode)
     {
-        if(CostToNode[i] <= K)
+        if(Cost <= K)
         {
             ++answer;
         }
     }
+
     return answer;
 }
