@@ -10,8 +10,8 @@ int Fibonachi(int n, vector<int>& DP)
         return DP[n];
     }
     
-    DP[n] = Fibonachi(n - 1, DP) + Fibonachi(n - 2, DP);
-    return DP[n] % 1234567;
+    DP[n] = (Fibonachi(n - 1, DP) + Fibonachi(n - 2, DP) )% 1234567;
+    return DP[n] ;
 }
 
 long long solution(int n)
