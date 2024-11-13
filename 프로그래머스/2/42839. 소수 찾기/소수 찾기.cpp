@@ -1,47 +1,52 @@
 #include <string>
 #include <vector>
 #include <set>
-#include <cmath>
-#include <iostream>
 #include <algorithm>
-
+#include <cmath>
 using namespace std;
 
-// 소수 판별 함수
-bool isPrime(int n) {
-    if (n <= 1) return false;  // 1 이하의 숫자는 소수가 아님
-    if (n == 2) return true;   // 2는 소수
-    if (n % 2 == 0) return false; // 2 외의 짝수는 소수가 아님
-
-    // 3부터 sqrt(n)까지 나누어보며 소수 판별
-    for (int i = 3; i <= sqrt(n); i += 2) {
-        if (n % i == 0) return false;
+bool IsPrime(int Num)
+{
+    if(Num == 1) return false;
+    if(Num == 2) return true;
+    if(Num % 2 == 0) return false;
+    
+    // 3부터 시작하여 홀수만 검사
+    for(int i = 3; i * i <= Num; i += 2)
+    {
+        if(Num % i == 0)
+        {
+            return false;
+        }
     }
     return true;
 }
 
-int solution(string numbers)
+int solution(string numbers) 
 {
-    set<int> numSet;  // 중복을 자동으로 처리하는 set 사용
+    set<int> Permutations;
 
-    // numbers의 모든 순열을 생성
-    sort(numbers.begin(), numbers.end());  // 순열을 만들기 위해 정렬
+    // 숫자들을 오름차순으로 정렬
+    sort(numbers.begin(), numbers.end());
+
+    // 순열을 만들고, Permutations에 넣기
     do {
-        // 순열로 만든 숫자를 set에 추가
-        for (int len = 1; len <= numbers.length(); ++len) {
-            int num = stoi(numbers.substr(0, len));  // 부분 문자열을 숫자로 변환
-            numSet.insert(num);
+        for (int i = 1; i <= numbers.length(); ++i) {
+            int num = stoi(numbers.substr(0, i));
+            Permutations.insert(num);
         }
     } while (next_permutation(numbers.begin(), numbers.end()));
-
-    int count = 0;
-
-    // numSet에 있는 숫자들이 소수인지 체크
-    for (int num : numSet) {
-        if (isPrime(num)) {
-            count++;
+    
+    int answer = 0;
+    
+    // Permutations에서 소수 판별 후 카운트
+    for (int Permutation : Permutations)
+    {
+        if (IsPrime(Permutation))
+        {
+            ++answer;
         }
     }
-
-    return count;
+                
+    return answer;
 }
