@@ -5,19 +5,20 @@ using namespace std;
 
 int solution(vector<vector<int>> sizes) 
 {
-
-    int NumOfValue = static_cast<int>(sizes.size());
-    int MinSize = 0;
-    int MaxSize = 0;
-
-    for (int i = 0; i < NumOfValue; ++i)
+    int Maxwidth = 0;
+    int MaxHeight = 0;
+    for(vector<int> Size: sizes)
     {
-        int CurMin = std::min(sizes[i][0], sizes[i][1]);
-        int CurMax = std::max(sizes[i][0], sizes[i][1]);
-        MinSize = std::max(MinSize, CurMin);
-        MaxSize = std::max(MaxSize, CurMax);
+        int MaxIndex = 1;
+        int MinIndex = 0;
+        if(Size[0] > Size[1])
+        {
+            swap(MaxIndex, MinIndex);
+        }
+        
+        Maxwidth = max(Maxwidth, Size[MaxIndex]);
+        MaxHeight = max(MaxHeight, Size[MinIndex]);
     }
-    
-    int answer = MinSize * MaxSize;
+    int answer = Maxwidth * MaxHeight;
     return answer;
 }
