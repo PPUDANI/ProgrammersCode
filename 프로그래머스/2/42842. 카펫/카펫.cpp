@@ -6,33 +6,25 @@ using namespace std;
 vector<int> solution(int brown, int yellow) 
 {
     // All - Yellow = Brown;
-    // Ax * Ay - Yx * Yy = Brown;
-    // Ax * Ay - (Ax - 2) * (Ay - 2) = Brown;
-    // Ax * Ay - (Ax * Ay - 2Ax - 2Ay + 4) = Brown;
-    // Ax * Ay - Ax * Ay + 2Ax + 2Ay - 4 = Brown;
-    // 2Ax + 2Ay - 4 = Brown;
-    // 
-    // Ax * Ay = All
-    // Ax + Ay = (Brown / 2) + 2;
-
-    vector<int> answer(2, 0);
+    // x.y - Yx.Yy = Brown;
+    // x.y - (x - 2).(y - 2) = Brown;
+    // x.y - (x.y - 2x - 2y + 4) = Brown;
+    // x.y - x.y + 2x + 2y - 4 = Brown;
+    // 2x + 2y - 4 = Brown;
+    
+    // 즉 아래 식으로 x와 y의 합을 구할 수 있음.
+    // x + y = (Brown / 2) + 2;
+    
     int WidthPlusHeight = (brown / 2) + 2;
     int AllTile = brown + yellow;
     
+    // "x * y = All" 이 성립하는 {x, y} 조합을 찾음.
     for(int i = 1; i < WidthPlusHeight; ++i)
     {
         int CheckTile = (WidthPlusHeight - i) * i;
         if(AllTile == CheckTile)
         {
-            answer[0] = WidthPlusHeight - i;
-            answer[1] = i;
+            return {WidthPlusHeight - i, i};
         }
     }
-    
-    if(answer[0] <= answer[1])
-    {
-        swap(answer[0], answer[1]);
-    }
-    
-    return answer;
 }
