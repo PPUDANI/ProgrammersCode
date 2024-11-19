@@ -1,16 +1,15 @@
-#include <iostream>
 #include <string>
-#include <stack>
 #include <vector>
 using namespace std;
 
 int solution(string s)
 {
-    int answer = -1;
     int StrLen = s.length();
+    
     vector<char> CharStack;
     CharStack.reserve(StrLen);
     CharStack.push_back(s[0]);
+    
     int CurIndex = 0;
     
     for(int i = 1; i < StrLen; ++i)
