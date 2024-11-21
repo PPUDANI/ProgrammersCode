@@ -3,7 +3,7 @@ int solution(int n)
 {
     int answer = 0;
     int Div = 10;
-    while(n != 0)
+    while(n)
     {
         int CurNum = n % Div;
         n /= Div;
