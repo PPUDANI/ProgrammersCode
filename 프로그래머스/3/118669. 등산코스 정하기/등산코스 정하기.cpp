@@ -1,87 +1,90 @@
 #include <string>
 #include <vector>
 #include <queue>
-
 using namespace std;
 
 #define INF 99999999
-
 vector<int> solution(int n, vector<vector<int>> paths, vector<int> gates, vector<int> summits) 
 {
     vector<vector<pair<int, int>>> Graph(n + 1);
     
     for(vector<int> Path : paths)
-    {
-        int From = Path[0];
-        int To = Path[1];
-        int Rest = Path[2];
-        
-        Graph[From].push_back({Rest, To});
-        Graph[To].push_back({Rest, From});
+    {        
+        Graph[Path[0]].push_back({Path[2], Path[1]});
+        Graph[Path[1]].push_back({Path[2], Path[0]});
     }
     
-    vector<int> MinRestToNode(n + 1, INF);
+    //                 Cost, Node
     priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> PQ;
     
-    vector<bool> GateCheck(n + 1, false);
-    for(int GateNode : gates)
+    vector<bool> IsGate(n+1, false);
+    for(int gate: gates)
     {
-        GateCheck[GateNode] = true;
-        PQ.push({0, GateNode});
+        IsGate[gate] = true;
+        PQ.push({0, gate});
     }
     
-    vector<bool> SummitCheck(n + 1, false);
-    for(int SummitNode : summits)
+    vector<bool> IsSummit(n+1, false);
+    for(int Summit : summits)
     {
-        SummitCheck[SummitNode] = true;
+        IsSummit[Summit] = true;
     }
     
+    //       MinCost, Gate
+    vector<int> CostToNode(n+1, INF);
     while(!PQ.empty())
     {
+        int CurCost = PQ.top().first;
         int CurNode = PQ.top().second;
-        int CurRest = PQ.top().first;
+        
         PQ.pop();
         
-        if(SummitCheck[CurNode] == true)
+        if(IsSummit[CurNode])
+        {
+            if(CostToNode[CurNode] > CurCost)
+            {
+                CostToNode[CurNode] = CurCost;
+            }
+            continue;
+        }
+        
+        if(CostToNode[CurNode] < CurCost)
         {
             continue;
         }
         
-        if (MinRestToNode[CurNode] < CurRest)
-        {
-            continue;
-        }
-        
-        for(pair<int, int> Next : Graph[CurNode])
-        {
-            int NextNode = Next.second;
-            if(GateCheck[NextNode] == true)
+        for(auto Edge : Graph[CurNode])
+        {       
+            int NewCost = max(Edge.first, CurCost);
+            int NextNode = Edge.second;
+            if(IsGate[NextNode])
             {
                 continue;
             }
-            
-            int NewRest = max(CurRest, Next.first);
-            if(MinRestToNode[NextNode] > NewRest)
+
+            if(CostToNode[NextNode] > NewCost)
             {
-                MinRestToNode[NextNode] = NewRest;
-                PQ.push({NewRest, NextNode});
+                CostToNode[NextNode] = NewCost;
+                PQ.push({NewCost, NextNode});
             }
         }
     }
     
-    vector<int> answer = {INF, INF};
+    int MinCost = INF;
+    int MinSummit = INF;
     for(int Summit : summits)
     {
-        if(MinRestToNode[Summit] < answer[1])
+        if(MinCost > CostToNode[Summit])
         {
-            answer[1] = MinRestToNode[Summit];
-            answer[0] = Summit;
+            MinCost = CostToNode[Summit];
+            MinSummit = Summit;
         }
-        else if(MinRestToNode[Summit] == answer[1])
+        else if(MinCost == CostToNode[Summit] &&
+               MinSummit > Summit)
         {
-            answer[0] = min(answer[0], Summit);
+            MinSummit = Summit;
         }
     }
     
-    return answer;
+    return {MinSummit, MinCost};
 }
