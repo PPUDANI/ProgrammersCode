@@ -7,10 +7,8 @@ using namespace std;
 int solution(vector<int> people, int limit)
 {
     vector<int> ASC_People(people.begin(), people.begin());
-    sort(people.begin(), people.end(), [](int Left, int Right)
-         { 
-             return Left > Right; 
-         });
+    sort(people.rbegin(), people.rend());
+    
     
     int DESC_index = 0;
     int ASC_index = int(people.size()) - 1;
