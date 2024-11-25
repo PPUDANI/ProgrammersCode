@@ -1,9 +1,6 @@
-#include <string>
 #include <vector>
-#include <algorithm>
 #include <unordered_map>
 #include <queue>
-#include <iostream>
 
 using namespace std;
 
@@ -27,10 +24,9 @@ int solution(int k, vector<int> tangerine) {
     
     while(!PQ.empty())
     {
-        cout << PQ.top() << " ";
         NumOfTang -= PQ.top();
-        PQ.pop();
         ++answer;
+        PQ.pop();
         
         if(NumOfTang <= 0)
         {
