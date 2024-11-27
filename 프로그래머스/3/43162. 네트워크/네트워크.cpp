@@ -1,49 +1,64 @@
 #include <string>
 #include <vector>
-#include <set>
-#include <stack>
+#include <queue>
+#include <iostream>
 using namespace std;
 
 int solution(int n, vector<vector<int>> computers) {
     int answer = 0;
     
-    set<int> VisitCheck;
-    for(int i = 0; i < n; ++i)
+    vector<bool> Visit(n, false);
+    queue<int> Q;
+    Visit[0] = true;
+    for(int i = 1; i < n; ++i)
     {
-        VisitCheck.insert(i);
+        if(computers[0][i] == 1)
+        {
+            Visit[i] = true;
+            Q.push(i);
+        }
     }
     
-    stack<int, vector<int>> DFS;
-    
-    
-    while(true)
+    int AllVisitCheck = false;
+    while(AllVisitCheck == false)
     {
-        while(!DFS.empty())
+        while(!Q.empty())
         {
-            int CurNode = DFS.top();
-            VisitCheck.erase(CurNode);
-            DFS.pop();
+            int CurIndex = Q.front();
+            cout << CurIndex << endl;
+            Q.pop();
+            
             for(int i = 0; i < n; ++i)
             {
-                if(CurNode != i && computers[CurNode][i] == 1 && 
-                   VisitCheck.find(i) != VisitCheck.end())
+                if(CurIndex == i)
                 {
-                    DFS.push(i);
+                    continue;
+                } 
+
+                if(computers[CurIndex][i] == 1) 
+                {
+                    if(Visit[i] == false)
+                    {
+                        Visit[i] = true;
+                        Q.push(i);
+                    }
                 }
             }
         }
         
-        if(VisitCheck.empty())
+        ++answer;
+        AllVisitCheck = true;
+        for(int i = 0; i < n; ++i)
         {
-            break;
-        }
-        else
-        {
-            ++answer;
-            DFS.push(*VisitCheck.begin());
+            if(Visit[i] == false)
+            {
+                Visit[i] = true;
+                Q.push(i);
+                AllVisitCheck = false;
+                break;
+            }
         }
     }
-
     
     return answer;
 }
