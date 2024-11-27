@@ -2,36 +2,36 @@
 #include <stack>
 using namespace std;
 
-int solution(vector<int> numbers, int target)
-{
+
+int solution(vector<int> numbers, int target) {
     int answer = 0;
-    int ArrSize = int(numbers.size());
-
-    stack<pair<int, int>, vector<pair<int, int>>> DFS_Stack;
-
-    //             Index   Stack
-    DFS_Stack.push({ 0, numbers[0]});
-    DFS_Stack.push({ 0, -numbers[0] });
-
-    while (!DFS_Stack.empty())
+    
+    stack<pair<int, int>, vector<pair<int, int>>> DPS;
+    
+    DPS.push({-numbers[0], 0});
+    DPS.push({numbers[0], 0});
+    
+    int NumSize = int(numbers.size());
+    while(!DPS.empty())
     {
-        int NextIndex = DFS_Stack.top().first + 1;
-        int StackOfNum = DFS_Stack.top().second;
-        DFS_Stack.pop();
-
-        if (NextIndex == ArrSize)
+        int CurAccum = DPS.top().first;
+        int CurIndex = DPS.top().second;
+        DPS.pop();
+        
+        int NextIndex = CurIndex + 1;
+        if(NextIndex == NumSize)
         {
-            if (StackOfNum == target)
+            if(CurAccum == target)
             {
                 ++answer;
             }
+            continue;
         }
-        else
-        {
-            DFS_Stack.push({ NextIndex, StackOfNum + numbers[NextIndex] });
-            DFS_Stack.push({ NextIndex, StackOfNum - numbers[NextIndex] });
-        }
+        
+        int NextAccum = numbers[NextIndex];
+        DPS.push({CurAccum - NextAccum, NextIndex});
+        DPS.push({CurAccum + NextAccum, NextIndex});
     }
-
+    
     return answer;
 }
