@@ -3,42 +3,36 @@
 #include <iostream>
 using namespace std;
 
+int GetNeedDate(int _progress, int _speed)
+{
+    int Task = 100 - _progress;
+    int NeedDate = (Task / _speed) + (((Task % _speed) != 0) ? 1 : 0);
+    return NeedDate;
+}
+
 vector<int> solution(vector<int> progresses, vector<int> speeds) 
 {
-    int NumOfProgram = progresses.size();
-    vector<int> EndDate(NumOfProgram);
-    for(int i = 0; i < NumOfProgram; ++i)
-    {
-        int Task = 100 - progresses[i];
-        int NeedDate = (Task / speeds[i]) + (((Task % speeds[i]) != 0) ? 1 : 0);
-        EndDate[i] = NeedDate;
-    }
-    
     vector<int> answer;
     
+    int NumOfProgram = progresses.size();;
+    int CurDate = GetNeedDate(progresses[0], speeds[0]);
     int Count = 1;
-    int CurIndex = 0;
-    int PrevMaxDate = EndDate[CurIndex];
     
-    while(CurIndex < NumOfProgram)
+    for(int i = 1; i < NumOfProgram; ++i)
     {
-        ++CurIndex;
-        if(CurIndex == NumOfProgram)
+        int NeedDate = GetNeedDate(progresses[i], speeds[i]);
+        if(CurDate < NeedDate)
         {
             answer.push_back(Count);
-            break;
-        }
-        if(PrevMaxDate >= EndDate[CurIndex])
-        {
-            ++Count;
+            CurDate = NeedDate;
+            Count = 1;
         }
         else
         {
-            PrevMaxDate = EndDate[CurIndex];
-            answer.push_back(Count);
-            Count = 1;
+            ++Count;
         }
     }
+    answer.push_back(Count);
     
     return answer;
 }
