@@ -1,11 +1,11 @@
 #include <string>
 #include <vector>
-#include <map>
+#include <unordered_map>
 using namespace std;
 
 int solution(vector<vector<string>> clothes) 
 {
-    map<string, int> NumOfType;
+    unordered_map<string, int> NumOfType;
     int answer = 1;
     for(vector<string> cloth : clothes)
     {
