@@ -19,18 +19,14 @@ bool CheckMatch(char CheckIndex1, char CheckIndex2, char CheckIndex3, char Check
     return IsAbleMatch;
 }
 
-int solution(int m, int n, vector<string> board) {
-    int answer = 0;
-    // 기본적인 로직에 검사 줄에 4매치가 안되는 줄은 검사에서 제외하기.
-    // 4칸 부터 900칸 까지 존재함.
-
+int solution(int m, int n, vector<string> board) 
+{
     int Loop_Height = m - 1;
     int Loop_Width = n - 1;
-
-
+    
+    int NumOfScore = 0;
     bool IsAbleMatch = true;
-    //int StartCheckLine = 0; // 검사를 시작할 라인 Index
-
+    
     while (IsAbleMatch)
     {
         IsAbleMatch = false; // 전체 매치 가능 여부 체크
@@ -38,7 +34,6 @@ int solution(int m, int n, vector<string> board) {
 
         for (int i = 0; i < Loop_Height; ++i)
         {
-            //bool IsUnableMatchLine = true; // 현재 라인 매치 가능 여부 체크
             for (int j = 0; j < Loop_Width; ++j)
             {
                 if (board[i][j] == EMPTY_BLOCK)
@@ -55,12 +50,6 @@ int solution(int m, int n, vector<string> board) {
                     IsAbleMatch = true;
                 }
             }
-
-            // 해당 라인이 매치
-            //if(IsUnableMatchLine)
-            //{
-            //  ++StartCheckLine;
-            //}
         }
 
         // 매치된 블록 제거 
@@ -71,7 +60,7 @@ int solution(int m, int n, vector<string> board) {
                 if (IsMatchBlock[i][j] == true)
                 {
                     board[i][j] = EMPTY_BLOCK;
-                    ++answer;
+                    ++NumOfScore;
                 }
             }
         }
@@ -110,5 +99,5 @@ int solution(int m, int n, vector<string> board) {
         }
     }
 
-    return answer;
+    return NumOfScore;
 }
