@@ -1,60 +1,54 @@
 #include <string>
 #include <vector>
-#include <queue>
-#include <iostream>
+#include <stack>
+
 using namespace std;
 
-int solution(int n, vector<vector<int>> computers) {
+int solution(int n, vector<vector<int>> computers) 
+{
     int answer = 0;
-    
     vector<bool> Visit(n, false);
-    queue<int> Q;
-    Visit[0] = true;
-    for(int i = 1; i < n; ++i)
+    
+    stack<int, vector<int>> DFS;
+    for(int i = 0; i < n; ++i)
     {
         if(computers[0][i] == 1)
         {
-            Visit[i] = true;
-            Q.push(i);
+            DFS.push(i);
         }
     }
-    
-    int AllVisitCheck = false;
-    while(AllVisitCheck == false)
+         
+    bool IsVisitedAll = false;
+    while(IsVisitedAll == false)
     {
-        while(!Q.empty())
+        while(!DFS.empty())
         {
-            int CurIndex = Q.front();
-            cout << CurIndex << endl;
-            Q.pop();
-            
+            int CurNode = DFS.top();
+            DFS.pop();
+
             for(int i = 0; i < n; ++i)
             {
-                if(CurIndex == i)
+                if(computers[CurNode][i] == 0)
                 {
                     continue;
-                } 
+                }
 
-                if(computers[CurIndex][i] == 1) 
+                if(Visit[i] == false)
                 {
-                    if(Visit[i] == false)
-                    {
-                        Visit[i] = true;
-                        Q.push(i);
-                    }
+                    Visit[i] = true;
+                    DFS.push(i);
                 }
             }
         }
-        
         ++answer;
-        AllVisitCheck = true;
+        IsVisitedAll = true;
         for(int i = 0; i < n; ++i)
         {
             if(Visit[i] == false)
             {
                 Visit[i] = true;
-                Q.push(i);
-                AllVisitCheck = false;
+                IsVisitedAll = false; 
+                DFS.push(i);
                 break;
             }
         }
