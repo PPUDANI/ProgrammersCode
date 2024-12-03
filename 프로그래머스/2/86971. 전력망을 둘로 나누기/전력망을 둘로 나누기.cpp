@@ -1,42 +1,43 @@
+#include <stack>
 #include <vector>
-#include <queue>
-#include <cmath>
+#include <algorithm>
+
 using namespace std;
-int BFS(int Start, int DeleteNode, vector<vector<int>> Graph, int NumOfNode)
+
+#define INF 999999999
+int DFS(vector<vector<int>> _Graph, int StartNode, int DeleteNode)
 {
-    queue<int> Q;
-    vector<bool> VisitCheck(NumOfNode + 1, false);
-    Q.push(Start);
-    VisitCheck[Start] = true;
+    vector<bool> Visit(_Graph.size(), false);
+    Visit[StartNode] = true;
+    Visit[DeleteNode] = true;
     
-    int Count = 0;
-    while(!Q.empty())
+    stack<int, vector<int>> Stack;
+    Stack.push(StartNode);
+    int NumOfNode = 1;
+    
+    while(!Stack.empty())
     {
-        ++Count;
-        int CurNode = Q.front();
-        Q.pop();
+        int CurNode = Stack.top();
+        Stack.pop();
         
-        for(int NextNode : Graph[CurNode])
+        for(int NextNode : _Graph[CurNode])
         {
-            if(DeleteNode == NextNode)
+            if(Visit[NextNode] == false)
             {
-                continue;
-            }
-            
-            if(VisitCheck[NextNode] == false)
-            {
-                VisitCheck[NextNode] = true;
-                Q.push(NextNode);
+                Visit[NextNode] = true;
+                Stack.push(NextNode);
+                ++NumOfNode;
             }
         }
     }
     
-    return Count;
+    return NumOfNode;
 }
 
 int solution(int n, vector<vector<int>> wires) 
 {
-    int answer = 100;
+    int answer = INF;
+    
     vector<vector<int>> Graph(n + 1);
     for(vector<int> Wire : wires)
     {
@@ -46,9 +47,9 @@ int solution(int n, vector<vector<int>> wires)
     
     for(vector<int> Wire : wires)
     {
-        int Left = BFS(Wire[0], Wire[1], Graph, n);
-        int Right = BFS(Wire[1], Wire[0], Graph, n);
-        answer = min(abs(Left - Right), answer);
+        int NumOfLeftNode = DFS(Graph, Wire[0], Wire[1]);
+        int NumOfRightNode = DFS(Graph, Wire[1], Wire[0]);
+        answer = min(answer, abs(NumOfLeftNode - NumOfRightNode));
     }
     
     return answer;
