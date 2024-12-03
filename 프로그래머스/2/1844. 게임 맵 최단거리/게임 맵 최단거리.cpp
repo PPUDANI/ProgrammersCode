@@ -1,75 +1,72 @@
 #include<vector>
 #include<queue>
-
 using namespace std;
+
 class int2
 {
 public:
-    int2(int _X = 0, int _Y = 0)
-        : X(_X), Y(_Y)
+    int X = 0;
+    int Y = 0;
+    
+    bool IsMapOver(int2 EndPos)
     {
-
+        if(X < 0 || Y < 0 || X > EndPos.X || Y > EndPos.Y)
+        {
+            return true;
+        }
+        return false;
     }
-
-    int X;
-    int Y;
-
-    int2 operator+ (const int2& _Val) const
+    
+    bool operator==(int2 _Value)
     {
-        return int2 (X + _Val.X, Y + _Val.Y);
-    }
-
-    bool operator == (const int2& _Val) const
-    {
-        return (X == _Val.X) && (Y == _Val.Y);
+        if(X == _Value.X && Y == _Value.Y)
+        {
+            return true;
+        }
+        return false;
     }
 };
 
-
-int solution(vector<vector<int>> maps)
+int solution(vector<vector<int> > maps)
 {
-    int YSize = maps.size();
-    int XSize = maps[0].size();
-    int2 Finish = int2(XSize - 1, YSize - 1);
-
-    vector<vector<bool>> VisitCheck(YSize, vector<bool>(XSize, false));
-    queue<pair<int2, int>> BFS_Q;
-    BFS_Q.push({ int2(0, 0), 1 });
-    VisitCheck[0][0] = true;
-
-
-    vector<int2> MoveDirs = { int2(0, -1), int2(0, 1), int2(-1, 0), int2(1, 0) };
-
-    while (!BFS_Q.empty())
+    int answer = 0;
+    int2 MapSize = {int(maps[0].size()), int(maps.size())};
+    
+    int2 StartPos = {0, 0};
+    int2 EndPos = {MapSize.X - 1, MapSize.Y - 1};
+    
+    vector<vector<bool>> Visit(MapSize.Y, vector<bool>(MapSize.X, false));
+    
+    queue<pair<int2, int>> BFS;
+    BFS.push({StartPos, 1});
+    
+    vector<int> Move_X = {0, 1 ,0 ,-1};
+    vector<int> Move_Y = {1, 0, -1, 0};
+    while(!BFS.empty())
     {
-        int2 CurTile = BFS_Q.front().first;
-        int CurDist = BFS_Q.front().second;
-        BFS_Q.pop();
-
-        if (CurTile == Finish)
+        int2 CurPos = BFS.front().first;
+        int CurDist = BFS.front().second;
+        BFS.pop();
+        
+        if(CurPos == EndPos)
         {
             return CurDist;
         }
-
-        for (const int2 MoveDir : MoveDirs)
+        
+        for(int i = 0; i < 4; ++i)
         {
-            int2 MoveTile = CurTile + MoveDir;
-            if (MoveTile.X < 0 || MoveTile.X >= XSize ||
-                MoveTile.Y < 0 || MoveTile.Y >= YSize ||
-                maps[MoveTile.Y][MoveTile.X] == 0)
+            int2 NextPos = {CurPos.X + Move_X[i], CurPos.Y + Move_Y[i]};
+            if(NextPos.IsMapOver(EndPos) || maps[NextPos.Y][NextPos.X] == 0)
             {
                 continue;
             }
-            else
+            if(Visit[NextPos.Y][NextPos.X] == false)
             {
-                if (VisitCheck[MoveTile.Y][MoveTile.X] == false)
-                {
-                    BFS_Q.push({ MoveTile, CurDist + 1 });
-                    VisitCheck[MoveTile.Y][MoveTile.X] = true;
-                }
+                Visit[NextPos.Y][NextPos.X] = true;
+                BFS.push({NextPos, CurDist + 1});
             }
         }
     }
-
+                          
     return -1;
 }
