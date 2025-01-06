@@ -1,34 +1,27 @@
 #include <string>
 #include <vector>
-#include <stack>
+
 using namespace std;
+
+int total;
+
+void DFS(vector<int> &numbers, int &target,int sum,int n) {
+    if(n >= numbers.size()){
+        if(sum == target) total++;
+        return;
+    }
+
+    DFS(numbers, target, sum + numbers[n], n+1);
+    DFS(numbers, target, sum - numbers[n], n+1);
+}
 
 int solution(vector<int> numbers, int target) {
     int answer = 0;
-    
-    stack<pair<int, int>, vector<pair<int, int>> > DFS;
-    DFS.push({numbers[0], 1});
-    DFS.push({-numbers[0], 1});
-    
-    int MaxIndex = int(numbers.size());
-    while(!DFS.empty())
-    {
-        int CurSum = DFS.top().first;
-        int CurIndex = DFS.top().second;
-        DFS.pop();
-        
-        if(CurIndex == MaxIndex)
-        {
-            if(CurSum == target)
-            {
-                ++answer;
-            }
-            continue;
-        }
-        
-        DFS.push({CurSum + numbers[CurIndex], CurIndex + 1});
-        DFS.push({CurSum - numbers[CurIndex], CurIndex + 1});
-    }
-    
+
+    DFS(numbers, target, numbers[0] , 1);
+    DFS(numbers, target, -numbers[0], 1);
+
+    answer = total;
+
     return answer;
 }
