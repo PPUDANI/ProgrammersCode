@@ -3,33 +3,31 @@
 #include <stack>
 using namespace std;
 
-int solution(vector<int> numbers, int target) 
-{
+int solution(vector<int> numbers, int target) {
     int answer = 0;
-    int NumOfNum = int(numbers.size());
     
-    stack<pair<int, int>, vector<pair<int, int>>> DPS;
+    stack<pair<int, int>, vector<pair<int, int>> > DFS;
+    DFS.push({numbers[0], 1});
+    DFS.push({-numbers[0], 1});
     
-    DPS.push({-numbers[0], 0});
-    DPS.push({numbers[0], 0});
-    
-    while(!DPS.empty())
+    int MaxIndex = int(numbers.size());
+    while(!DFS.empty())
     {
-        int CurAccum = DPS.top().first;
-        int NextIndex = DPS.top().second + 1;
-        DPS.pop();
-        if(NextIndex < NumOfNum)
+        int CurSum = DFS.top().first;
+        int CurIndex = DFS.top().second;
+        DFS.pop();
+        
+        if(CurIndex == MaxIndex)
         {
-            DPS.push({CurAccum - numbers[NextIndex], NextIndex});
-            DPS.push({CurAccum + numbers[NextIndex], NextIndex});
-        }
-        else
-        {
-            if(CurAccum == target)
+            if(CurSum == target)
             {
                 ++answer;
             }
+            continue;
         }
+        
+        DFS.push({CurSum + numbers[CurIndex], CurIndex + 1});
+        DFS.push({CurSum - numbers[CurIndex], CurIndex + 1});
     }
     
     return answer;
