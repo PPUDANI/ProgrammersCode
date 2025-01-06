@@ -3,40 +3,42 @@
 #include <queue>
 using namespace std;
 
-#define INF 999999999
-int solution(int N, vector<vector<int>> road, int K) 
+#define INF 2147483647
+
+int solution(int N, vector<vector<int> > road, int K) 
 {
-    //            pair<Cost, Node>
-    vector<vector<pair<int, int>>> Graph(N+1);
-    for(vector<int> Edge : road)
+    int answer = 0;
+    //         Cost  NextNode
+    vector<vector<pair<int, int>>> Graph(N + 1, vector<pair<int, int>>());
+    for(vector<int> EdgeInfo : road)
     {
-        Graph[Edge[0]].push_back({Edge[2], Edge[1]});
-        Graph[Edge[1]].push_back({Edge[2], Edge[0]});
+        Graph[EdgeInfo[0]].push_back({EdgeInfo[2], EdgeInfo[1]});  
+        Graph[EdgeInfo[1]].push_back({EdgeInfo[2], EdgeInfo[0]});
     }
     
-    vector<int> CostToNode(N+1, INF);
-    CostToNode[1] = 0;
-    
-    //             pair<Cost, Node>
-    priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> PQ;
+    priority_queue<pair<int, int>> PQ;
     PQ.push({0, 1});
+    
+    vector<int> CostToNode(N + 1, INF);
+    CostToNode[1] = 0;
     
     while(!PQ.empty())
     {
-        int CurNode = PQ.top().second;
         int CurCost = PQ.top().first;
+        int CurNode = PQ.top().second;
         PQ.pop();
         
-        if(CostToNode[CurNode] < CurCost)
+        if(CurCost > CostToNode[CurNode])
         {
             continue;
         }
         
         for(pair<int, int> Edge : Graph[CurNode])
         {
-            int NextNode = Edge.second;
             int NewCost = CurCost + Edge.first;
-            if(CostToNode[NextNode] > NewCost)
+            int NextNode = Edge.second;
+            
+            if(NewCost < CostToNode[NextNode])
             {
                 CostToNode[NextNode] = NewCost;
                 PQ.push({NewCost, NextNode});
@@ -44,7 +46,6 @@ int solution(int N, vector<vector<int>> road, int K)
         }
     }
     
-    int answer = 0;
     for(int i = 1; i <= N; ++i)
     {
         if(CostToNode[i] <= K)
@@ -53,5 +54,5 @@ int solution(int N, vector<vector<int>> road, int K)
         }
     }
     
-    return answer;
+    return  answer;
 }
