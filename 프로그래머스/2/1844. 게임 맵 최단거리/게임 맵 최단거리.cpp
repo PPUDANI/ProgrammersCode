@@ -1,72 +1,59 @@
 #include<vector>
 #include<queue>
+
 using namespace std;
 
-class int2
+struct int2
 {
-public:
-    int X = 0;
-    int Y = 0;
+    int x;
+    int y;
     
-    bool IsMapOver(int2 EndPos)
+    int2 operator +(int2 _Val)
     {
-        if(X < 0 || Y < 0 || X > EndPos.X || Y > EndPos.Y)
-        {
-            return true;
-        }
-        return false;
-    }
-    
-    bool operator==(int2 _Value)
-    {
-        if(X == _Value.X && Y == _Value.Y)
-        {
-            return true;
-        }
-        return false;
+        int2 Res;
+        Res.x = _Val.x + x;
+        Res.y = _Val.y + y;
+        return Res;
     }
 };
 
 int solution(vector<vector<int> > maps)
 {
     int answer = 0;
-    int2 MapSize = {int(maps[0].size()), int(maps.size())};
-    
-    int2 StartPos = {0, 0};
-    int2 EndPos = {MapSize.X - 1, MapSize.Y - 1};
-    
-    vector<vector<bool>> Visit(MapSize.Y, vector<bool>(MapSize.X, false));
+    int XSize = int(maps[0].size());
+    int YSize = int(maps.size());
     
     queue<pair<int2, int>> BFS;
-    BFS.push({StartPos, 1});
+    vector<vector<bool>> Visit(YSize, vector<bool>(XSize, false));
     
-    vector<int> Move_X = {0, 1 ,0 ,-1};
-    vector<int> Move_Y = {1, 0, -1, 0};
+    //                            Up      Down    Right   Left
+    vector<int2> Dirs = {{-1, 0}, {1, 0}, {0, 1}, {0, -1}};
+
+    BFS.push({{0, 0}, 1});
+    maps[0][0] = 0;
+    
     while(!BFS.empty())
     {
-        int2 CurPos = BFS.front().first;
-        int CurDist = BFS.front().second;
+        int2 CurLocation = BFS.front().first;
+        int NumOfMovedTile = BFS.front().second;
         BFS.pop();
         
-        if(CurPos == EndPos)
+        if(CurLocation.y == YSize - 1 && CurLocation.x == XSize - 1 )
         {
-            return CurDist;
+            return NumOfMovedTile;
         }
         
-        for(int i = 0; i < 4; ++i)
+        for(int2 Dir : Dirs)
         {
-            int2 NextPos = {CurPos.X + Move_X[i], CurPos.Y + Move_Y[i]};
-            if(NextPos.IsMapOver(EndPos) || maps[NextPos.Y][NextPos.X] == 0)
-            {
-                continue;
-            }
-            if(Visit[NextPos.Y][NextPos.X] == false)
-            {
-                Visit[NextPos.Y][NextPos.X] = true;
-                BFS.push({NextPos, CurDist + 1});
+            int2 NextLocation = CurLocation + Dir;
+            if((NextLocation.y >= 0 && NextLocation.y < YSize && NextLocation.x >= 0 && 
+               NextLocation.x < XSize) && maps[NextLocation.y][NextLocation.x] == 1)
+            {    
+                maps[NextLocation.y][NextLocation.x] = 0;
+                BFS.push({NextLocation, NumOfMovedTile + 1});
             }
         }
     }
-                          
+
     return -1;
 }
