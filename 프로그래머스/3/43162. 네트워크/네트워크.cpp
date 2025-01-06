@@ -1,39 +1,30 @@
 #include <string>
 #include <vector>
 #include <stack>
-
 using namespace std;
 
-int solution(int n, vector<vector<int>> computers) 
-{
+
+
+
+int solution(int n, vector<vector<int>> computers) {
     int answer = 0;
-    vector<bool> Visit(n, false);
     
+    vector<bool> Visit(n, false);
     stack<int, vector<int>> DFS;
-    for(int i = 0; i < n; ++i)
-    {
-        if(computers[0][i] == 1)
-        {
-            DFS.push(i);
-        }
-    }
-         
-    bool IsVisitedAll = false;
-    while(IsVisitedAll == false)
+    DFS.push(0);
+    Visit[0] = true;
+    
+    bool IsEnd = false;
+    while(IsEnd == false)
     {
         while(!DFS.empty())
         {
-            int CurNode = DFS.top();
+            int CurNum = DFS.top();
             DFS.pop();
-
+            
             for(int i = 0; i < n; ++i)
             {
-                if(computers[CurNode][i] == 0)
-                {
-                    continue;
-                }
-
-                if(Visit[i] == false)
+                if(computers[CurNum][i] == 1 && Visit[i] == false)
                 {
                     Visit[i] = true;
                     DFS.push(i);
@@ -41,16 +32,22 @@ int solution(int n, vector<vector<int>> computers)
             }
         }
         ++answer;
-        IsVisitedAll = true;
+        
+        bool EndCheck = true;
         for(int i = 0; i < n; ++i)
         {
             if(Visit[i] == false)
             {
+                EndCheck = false;
                 Visit[i] = true;
-                IsVisitedAll = false; 
                 DFS.push(i);
                 break;
             }
+        }
+        
+        if(EndCheck == true)
+        {
+            IsEnd = true;
         }
     }
     
