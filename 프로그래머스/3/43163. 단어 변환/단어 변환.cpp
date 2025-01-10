@@ -1,13 +1,13 @@
 #include <string>
 #include <vector>
-#include <queue>
+#include <stack>
 
 using namespace std;
 
 #define Max 10000
 int solution(string begin, string target, vector<string> words) 
 {
-    int answer = 0;
+    int answer = Max;
     int wordlength = int(begin.length());
     bool IsChangeable = false;
     for(const string& word : words)
@@ -23,18 +23,21 @@ int solution(string begin, string target, vector<string> words)
         return 0;
     }
     
-    queue<pair<string, int>> BFS;
+    vector<bool> Changed( words.size(), false);
     
-    BFS.push({begin, 0});
-    while(!BFS.empty())
+    stack<pair<pair<string, int>, vector<bool>>> DFS;
+    
+    DFS.push({{begin, 0}, Changed});
+    while(!DFS.empty())
     {
-        string CurStr = BFS.front().first;
-        int CurCount = BFS.front().second;
-        BFS.pop();
+        string CurStr = DFS.top().first.first;
+        int CurCount = DFS.top().first.second;
+        vector<bool> CurChanged = move(DFS.top().second);
+        DFS.pop();
         
         if(CurStr == target)
         {
-            return CurCount;
+            answer = min(answer, CurCount);
         }
         
         int WordIndex = 0;
@@ -51,11 +54,15 @@ int solution(string begin, string target, vector<string> words)
             
             if(SameAlpha == wordlength - 1)
             {
-                BFS.push({word, CurCount + 1});
+                if (Changed[WordIndex] == false)
+                {
+                    Changed[WordIndex] = true;
+                    DFS.push({{word, CurCount + 1}, move(CurChanged)});
+                }
             }
             ++WordIndex;
         }
     }
     
-    return 0;
+    return answer;
 }
