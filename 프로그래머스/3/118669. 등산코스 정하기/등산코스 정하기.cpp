@@ -1,50 +1,55 @@
-#include <string>
-#include <vector>
 #include <queue>
+#include <vector>
 using namespace std;
 
-#define INF 99999999
+struct NodeInfo
+{
+    int Cost;
+    int Number;
+    
+    bool operator>(const NodeInfo _Val) const
+    {
+        return Cost > _Val.Cost;
+    }
+};
+
+#define INF 999999999
 vector<int> solution(int n, vector<vector<int>> paths, vector<int> gates, vector<int> summits) 
 {
-    vector<vector<pair<int, int>>> Graph(n + 1);
+    vector<vector<NodeInfo>> Graph(n + 1);
     
     for(vector<int> Path : paths)
-    {        
+    {
         Graph[Path[0]].push_back({Path[2], Path[1]});
         Graph[Path[1]].push_back({Path[2], Path[0]});
     }
     
-    //                 Cost, Node
-    priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> PQ;
-    
-    vector<bool> IsGate(n+1, false);
-    for(int gate: gates)
+    //                 max, CurNode
+    priority_queue<NodeInfo, vector<NodeInfo>, greater<NodeInfo>> PQ;
+    vector<bool> IsGate(n + 1, false);
+    for(int Gate : gates)
     {
-        IsGate[gate] = true;
-        PQ.push({0, gate});
+        IsGate[Gate] = true;
+        PQ.push({0, Gate});
     }
     
-    vector<bool> IsSummit(n+1, false);
+    vector<bool> IsSummit(n + 1, false);
     for(int Summit : summits)
     {
         IsSummit[Summit] = true;
     }
     
-    //       MinCost, Gate
-    vector<int> CostToNode(n+1, INF);
+    vector<int> CostToNode(n + 1, INF);
+    
     while(!PQ.empty())
     {
-        int CurCost = PQ.top().first;
-        int CurNode = PQ.top().second;
+        int CurCost = PQ.top().Cost;
+        int CurNode = PQ.top().Number;
         
         PQ.pop();
         
         if(IsSummit[CurNode])
         {
-            if(CostToNode[CurNode] > CurCost)
-            {
-                CostToNode[CurNode] = CurCost;
-            }
             continue;
         }
         
@@ -53,15 +58,16 @@ vector<int> solution(int n, vector<vector<int>> paths, vector<int> gates, vector
             continue;
         }
         
-        for(auto Edge : Graph[CurNode])
-        {       
-            int NewCost = max(Edge.first, CurCost);
-            int NextNode = Edge.second;
+        for(NodeInfo NextInfo : Graph[CurNode])
+        {
+            int NextNode = NextInfo.Number;
+            int NewCost = max(CurCost, NextInfo.Cost);
+            
             if(IsGate[NextNode])
             {
                 continue;
             }
-
+            
             if(CostToNode[NextNode] > NewCost)
             {
                 CostToNode[NextNode] = NewCost;
@@ -70,21 +76,21 @@ vector<int> solution(int n, vector<vector<int>> paths, vector<int> gates, vector
         }
     }
     
-    int MinCost = INF;
-    int MinSummit = INF;
-    for(int Summit : summits)
+    int Res_Summit = INF;
+    int Res_Cost = INF;
+    for(int CurNode : summits)
     {
-        if(MinCost > CostToNode[Summit])
+        if(Res_Cost > CostToNode[CurNode])
         {
-            MinCost = CostToNode[Summit];
-            MinSummit = Summit;
+            Res_Cost = CostToNode[CurNode];
+            Res_Summit = CurNode;
         }
-        else if(MinCost == CostToNode[Summit] &&
-               MinSummit > Summit)
+        else if(Res_Cost == CostToNode[CurNode])
         {
-            MinSummit = Summit;
+            Res_Summit = min(Res_Summit, CurNode);
         }
     }
     
-    return {MinSummit, MinCost};
+    vector<int> answer = {Res_Summit, Res_Cost};
+    return answer;
 }
