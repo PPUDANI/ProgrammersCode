@@ -1,76 +1,91 @@
 #include <string>
-#include <unordered_set>
+#include <unordered_map>
 #include <cctype>
 #include <algorithm>
-
+#include <numeric>
 using namespace std;
 
-void StandardizationStr(string& Res, const string& str)
+void ToUpperStr(string& str)
 {
     int StrLen = str.length();
     for(int i = 0; i < StrLen; ++i)
     {
-        Res += toupper(str[i]);
+        str[i] = toupper(str[i]);
     }
 }
 
-
 int solution(string str1, string str2) 
 {
-    unordered_multiset<string> Eliments;
-    unordered_multiset<string> Eliment2;
+    ToUpperStr(str1);
+    ToUpperStr(str2);
     
-    string StandardStr1 = "";
-    string StandardStr2 = "";
-    StandardizationStr(StandardStr1, str1);
-    StandardizationStr(StandardStr2, str2);
+    unordered_map<string, int> Eliments;
     
-    if(StandardStr1.length() > StandardStr2.length())
+    if(str1.length() > str2.length())
     {
-        swap(StandardStr1, StandardStr2);
+        swap(str1, str2);
     }
     
-    int str1Loop = StandardStr1.length() - 1;
+    int str1Loop = str1.length() - 1;
     for(int i = 0; i < str1Loop; ++i)
     {
-        string NewEliment = StandardStr1.substr(i, 2);
-        if(isalpha(NewEliment[0]) && isalpha(NewEliment[1]))
+        string NewEliment = std::move(str1.substr(i, 2));
+        if(!isalpha(NewEliment[0]))
         {
-            Eliments.insert(NewEliment);
+            continue;
+        }
+        else if(!isalpha(NewEliment[1]))
+        {
+            ++i;
+        }
+        else
+        {
+            ++Eliments[NewEliment];
         }
     }
 
     int UnionCount = 0;
     int ItersectionCount = 0;
     
-    int str2Loop = StandardStr2.length() - 1;
+    int str2Loop = str2.length() - 1;
     for(int i = 0; i < str2Loop; ++i)
     {
-        string NewEliment = StandardStr2.substr(i, 2);
-        
-        if(isalpha(NewEliment[0]) && isalpha(NewEliment[1]))
+        string NewEliment = std::move(str2.substr(i, 2));
+        if(!isalpha(NewEliment[0]))
         {
-            auto FindedEliment = Eliments.find(NewEliment);
-            if(FindedEliment != Eliments.end())
+            continue;
+        }
+        else if(!isalpha(NewEliment[1]))
+        {
+            ++i;
+            continue;
+        }
+        else
+        {
+            if(Eliments.find(NewEliment) != Eliments.end())
             {
-                Eliments.erase(FindedEliment);
-                ++ItersectionCount;
+                if(Eliments[NewEliment] > 0)
+                {
+                    --Eliments[NewEliment];
+                    ++ItersectionCount;
+                }
             }
+            
             ++UnionCount;
         }
     }
-    UnionCount += Eliments.size();
     
-    
-    float res;
-    if(UnionCount == 0 && ItersectionCount == 0)
-    {
-        res = 1;
-    }
-    else
+    UnionCount += accumulate(Eliments.begin(), Eliments.end(), 0, 
+                             [](int acc, const pair<string, int>& p)
+                             {
+                                 return acc + p.second;
+                             });
+    float res = 1;
+    if(UnionCount != 0 || ItersectionCount != 0)
     {
         res = float(ItersectionCount) / float(UnionCount);
     }
+
     int answer = res * 65536.0f;
     
     return answer;
