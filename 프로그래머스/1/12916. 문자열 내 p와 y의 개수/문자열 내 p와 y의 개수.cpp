@@ -5,16 +5,18 @@ using namespace std;
 bool solution(string s)
 {
     bool answer = true;
-    
     int PCount = 0;
     int YCount = 0;
+    
     for(char c : s)
     {
-        if(c == 'P' || c == 'p')
+        c = std::tolower(c);
+        
+        if(c == 'p')
         {
             ++PCount;
         }
-        else if(c == 'y' || c == 'Y')
+        else if(c == 'y')
         {
             ++YCount;
         }
