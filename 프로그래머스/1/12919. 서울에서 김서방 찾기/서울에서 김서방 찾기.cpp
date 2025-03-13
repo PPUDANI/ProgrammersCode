@@ -1,20 +1,11 @@
 #include <string>
 #include <vector>
-#include <unordered_set>
+#include <algorithm>
 using namespace std;
 
 string solution(vector<string> seoul)
 {
-    int Index;
-    int NumOfStr = seoul.size();
-    for(int i = 0; i < NumOfStr; ++i)
-    {
-        if(seoul[i] == "Kim")
-        {
-            Index = i;
-            break;
-        }
-    }
+    int Index = find(seoul.begin(), seoul.end(), "Kim") - seoul.begin();
     
     string answer = "김서방은 " + to_string(Index) + "에 있다";
     return answer;
