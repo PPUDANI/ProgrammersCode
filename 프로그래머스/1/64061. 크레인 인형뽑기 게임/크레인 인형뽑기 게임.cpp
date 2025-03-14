@@ -4,38 +4,34 @@
 
 using namespace std;
 
-int solution(vector<vector<int>> board, vector<int> moves) {
+int solution(vector<vector<int>> board, vector<int> moves) 
+{
     int answer = 0;
-    std::stack<int> Basket;
-    Basket.push(-1);
-
-    int Height = board.size(); // N * N size
-    for (int i : moves)
+    stack<int, vector<int>> Stack;
+    
+    int boardY = board.size();
+    for(int i : moves)
     {
-        --i;
-        for (int j = 0; j < Height; ++j)
+        for(int j = 0; j < boardY; ++j)
         {
-            if (board[j][i] == 0)
+            int CurCheck = board[j][i - 1];
+            if(CurCheck != 0)
             {
-                continue;
-            }
-            else
-            {
-                int a = Basket.top();
-                int b = board[j][i];
-                if (a == b)
+                board[j][i - 1] = 0;
+                if(!Stack.empty() && CurCheck == Stack.top())
                 {
-                    Basket.pop();
+                    Stack.pop();
                     answer += 2;
                 }
                 else
                 {
-                    Basket.push(board[j][i]);
+                    Stack.push(CurCheck);
                 }
-                board[j][i] = 0;
+                
                 break;
             }
         }
     }
+    
     return answer;
 }
