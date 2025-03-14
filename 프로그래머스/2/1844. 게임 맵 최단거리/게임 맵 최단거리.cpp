@@ -1,69 +1,80 @@
 #include<vector>
 #include<queue>
-
+#include<iostream>
 using namespace std;
 
 struct int2
 {
-    int x;
-    int y;
+    int x = 0;
+    int y = 0;
     
-    int2 operator+(int2 _Val)
+    bool operator==(const int2 _val) const
+    {
+        return x == _val.x && y == _val.y;
+    }
+    
+    int2 operator+(const int2 _val) const
     {
         int2 Res;
-        Res.x = x + _Val.x;
-        Res.y = y + _Val.y;
+        Res.x = x + _val.x;
+        Res.y = y + _val.y;
         return Res;
     }
-    
-    bool operator ==(int2 _Val)
+};
+
+bool IsOver(int2 _Pos, int2 _MaxPos)
+{
+    if(_Pos.x < 0 || _Pos.y < 0)
     {
-        return x == _Val.x && y == _Val.y;
+        return true;
+    }
+    else if(_Pos.x > _MaxPos.x || _Pos.y > _MaxPos.y)
+    {
+        return true;
     }
     
-};
+    return false;
+}
 
 int solution(vector<vector<int> > maps)
 {
-    int Max_x = int(maps[0].size());
-    int Max_y = int(maps.size());
-    int2 Goal = {Max_x - 1, Max_y - 1};
+    int2 MaxPos = 
+    {
+        static_cast<int>(maps[0].size() - 1), 
+        static_cast<int>(maps.size() - 1)
+    };
     
     queue<pair<int2, int>> BFS;
-    vector<vector<bool>> Visit(Max_y, vector<bool>(Max_x, false));
-    
     BFS.push({{0, 0}, 1});
-    Visit[0][0] = true;
-
-    vector<int2> MoveDirs = {{-1, 0},{1, 0},{0, -1},{0, 1}};
+    maps[0][0] = 0;
+    vector<int2> Dirs = 
+    {
+        {-1, 0},
+        {1, 0},
+        {0, -1},
+        {0, 1}
+    };
+    
     while(!BFS.empty())
     {
-        int2 CurTile = BFS.front().first;
-        int CurMoveCount = BFS.front().second;
+        int2 CurPos = BFS.front().first;
+        int CurSum = BFS.front().second;
         BFS.pop();
         
-        if(CurTile == Goal)
+        if(CurPos == MaxPos)
         {
-            return CurMoveCount;
+            return CurSum;
         }
         
-        for(int2 MoveDir : MoveDirs)
+        for(int2 CurDir : Dirs)
         {
-            int2 NextTile = CurTile + MoveDir;
-            if(NextTile.x < 0 || NextTile.y < 0 || NextTile.x >= Max_x || NextTile.y >= Max_y)
-            {
-                continue;
-            }
+            int2 NewPos = CurPos + CurDir;
             
-            if(maps[NextTile.y][NextTile.x] == 0)
+            if(IsOver(NewPos, MaxPos) == false && 
+               maps[NewPos.y][NewPos.x] == 1)
             {
-                continue;
-            }
-            
-            if(Visit[NextTile.y][NextTile.x] == false)
-            {
-                Visit[NextTile.y][NextTile.x] = true;
-                BFS.push({NextTile, CurMoveCount + 1});
+                maps[NewPos.y][NewPos.x] = 0;
+                BFS.push({NewPos, CurSum + 1});
             }
         }
     }
