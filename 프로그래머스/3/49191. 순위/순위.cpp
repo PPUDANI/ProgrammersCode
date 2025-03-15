@@ -1,28 +1,35 @@
+#include <string>
 #include <vector>
-
+#include <numeric>
+#include <iostream>
 using namespace std;
 
-#define NON_RESULT 0
 int solution(int n, vector<vector<int>> results) 
 {
-    vector<vector<int>> Graph(n+1 , vector<int>(n + 1, NON_RESULT));
-    for(vector<int> result : results)
+    vector<vector<int>> Graph(n, vector<int>(n, 0));
+    
+    for(vector<int> Res : results)
     {
-        Graph[result[0]][result[1]] = 1;
-        Graph[result[1]][result[0]] = -1;
+        Graph[Res[0] - 1][Res[1] - 1] = 1;
+        Graph[Res[1] - 1][Res[0] - 1] = -1;
     }
     
-    for(int k = 1; k <= n; ++k)
+    for(int k = 0; k < n; ++k)
     {
-        for(int i = 1; i <= n; ++i)
+       for(int i = 0; i < n; ++i)
         {
-            if(i == k)
+            if(k == i)
             {
                 continue;
             }
-            
-            for(int j = 1; j <= n; ++j)
+           
+            for(int j = 0; j < n; ++j)
             {
+                if(i == j)
+                {
+                    continue;
+                }
+                
                 if(Graph[i][k] == 1 && Graph[k][j] == 1)
                 {
                     Graph[i][j] = 1;
@@ -33,24 +40,28 @@ int solution(int n, vector<vector<int>> results)
     }
     
     int answer = 0;
-    for(int i = 1; i <= n; ++i)
+    for(int i = 0; i < n; ++i)
     {
-        int ResultCount = 0;
-        for(int j = 1; j <= n; ++j)
+        bool Checkable = true;
+        for(int j = 0; j < n; ++j)
         {
-            if(Graph[i][j] != 0)
+            if(i == j)
             {
-                
-                ++ResultCount;
+                continue;
+            }
+            
+            if(Graph[i][j] == 0)
+            {
+                Checkable = false;
+                break;
             }
         }
-        
-        if(n - 1 == ResultCount)
+
+        if(Checkable)
         {
             ++answer;
         }
     }
-    
     
     return answer;
 }
