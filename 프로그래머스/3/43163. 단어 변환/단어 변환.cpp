@@ -1,66 +1,74 @@
 #include <string>
 #include <vector>
+#include <queue>
 #include <stack>
-
 using namespace std;
 
-#define Max 10000
 int solution(string begin, string target, vector<string> words) 
 {
-    int answer = Max;
-    int wordlength = int(begin.length());
-    bool IsChangeable = false;
-    for(const string& word : words)
+    int answer = 0;
+    
+    // target이 있는지부터 확인
+    bool Changeable = false;
+    for(const string& str : words)
     {
-        if(word == target)
+        if(str == target)
         {
-            IsChangeable = true;
+            Changeable = true;
+            break;
         }
     }
     
-    if(IsChangeable == false)
+    if(Changeable == false)
     {
-        return 0;
+        return answer;
     }
     
-    vector<bool> Changed( words.size(), false);
+    // begin과 글자 수 가 1개 다른 경우 push
+    // DFS와 BFS 뭐가 더 좋을까.
+    int WordLength = begin.length();
+    int NumOfWord = int(words.size());
     
-    stack<pair<pair<string, int>, vector<bool>>> DFS;
+    vector<bool> IsVisit(NumOfWord, false);
     
-    DFS.push({{begin, 0}, Changed});
+    stack<pair<pair<string, int>, vector<bool>>, vector<pair<pair<string, int>, vector<bool>>>> DFS;
+  
+    DFS.push({{begin, 0}, IsVisit});
+
     while(!DFS.empty())
     {
         string CurStr = DFS.top().first.first;
-        int CurCount = DFS.top().first.second;
-        vector<bool> CurChanged = move(DFS.top().second);
+        int CurNum = DFS.top().first.second;
+        vector<bool> CurVisit = DFS.top().second;
         DFS.pop();
         
         if(CurStr == target)
         {
-            answer = min(answer, CurCount);
+            answer = CurNum;
+            break;
         }
         
-        int WordIndex = 0;
-        for(const string& word : words)
+        for(int i = 0; i < NumOfWord; ++i)
         {
-            int SameAlpha = 0;
-            for(int i = 0; i < wordlength; ++i)
+            if(CurVisit[i] == true)
             {
-                if(CurStr[i] == word[i])
+                continue;
+            }
+            
+            int Count = 0;
+            for(int j = 0; j < WordLength; ++j)
+            {
+                if(words[i][j] == CurStr[j])
                 {
-                    ++SameAlpha;
+                    ++Count;
                 }
             }
             
-            if(SameAlpha == wordlength - 1)
+            if(Count == WordLength - 1)
             {
-                if (Changed[WordIndex] == false)
-                {
-                    Changed[WordIndex] = true;
-                    DFS.push({{word, CurCount + 1}, move(CurChanged)});
-                }
+                CurVisit[i] = true;
+                DFS.push({{words[i], CurNum + 1}, CurVisit});
             }
-            ++WordIndex;
         }
     }
     
