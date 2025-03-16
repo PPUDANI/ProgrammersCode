@@ -1,65 +1,52 @@
 #include <string>
 #include <vector>
-#include <iostream>
+
 using namespace std;
 
 #define PUDDLE 0
-#define EMPTY 999999999
 
 int solution(int m, int n, vector<vector<int>> puddles) 
 {
-    vector<vector<int>> Map(n, vector<int>(m, EMPTY));
-        
-    for(vector<int> Puddle : puddles)
+    vector<vector<int>> TileMap(n, vector<int>(m, -1));
+    
+    for(vector<int> puddle : puddles)
     {
-        Map[Puddle[1] - 1][Puddle[0] - 1] = PUDDLE;
+        TileMap[puddle[1] - 1][puddle[0] - 1] = PUDDLE;
     }
     
-    for(int i = 0; i < m; ++i)
+    int BaseCase = 1;
+    for(int i = 1; i < n; ++i)
     {
-        if(Map[0][i] == PUDDLE)
+        if(TileMap[i][0] == PUDDLE)
         {
-            break;
+            BaseCase = 0;
         }
-        
-        Map[0][i] = 1;
+        TileMap[i][0] = BaseCase;
     }
     
-    for(int i = 0; i < n; ++i)
+    BaseCase = 1;
+    for(int j = 1; j < m; ++j)
     {
-        if(Map[i][0] == PUDDLE)
+        if(TileMap[0][j] == PUDDLE)
         {
-            break;
+            BaseCase = 0;
         }
-        Map[i][0] = 1;
+        TileMap[0][j] = BaseCase;
     }
-
+    
     for(int i = 1; i < n; ++i)
     {
         for(int j = 1; j < m; ++j)
         {
-            if(Map[i][j] == PUDDLE)
+            if(TileMap[i][j] == PUDDLE)
             {
                 continue;
             }
             
-            int Up = Map[i-1][j];
-            int Left = Map[i][j-1];
-            
-            if(Up == EMPTY)
-            {
-                Up = 0;
-            }
-            
-            if(Left == EMPTY)
-            {
-                Left = 0;
-            }
-            
-            Map[i][j] = (Up + Left) % 1000000007;
+            TileMap[i][j] = (TileMap[i - 1][j] + TileMap[i][j - 1]) % 1000000007;
         }
     }
     
-    int answer = Map[n-1][m-1] % 1000000007;
+    int answer = TileMap[n-1][m-1];
     return answer;
 }
