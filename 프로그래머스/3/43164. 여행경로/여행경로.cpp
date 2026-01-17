@@ -5,16 +5,15 @@ using namespace std;
 
 vector<string> answer;
 bool visited[10001];
-int NumOfTicket = 0;
 
 bool dfs(const string& Airport, const vector<vector<string>>& tickets, int count)
 {
-    if(count == NumOfTicket)
+    if(count == tickets.size())
     {
         return true;
     }
 
-    for(int i = 0; i < NumOfTicket; ++i)
+    for(int i = 0; i < tickets.size(); ++i)
     {
         if(visited[i] == false && tickets[i][0] == Airport)
         {
@@ -34,7 +33,6 @@ bool dfs(const string& Airport, const vector<vector<string>>& tickets, int count
 
 vector<string> solution(vector<vector<string>> tickets) 
 {
-    NumOfTicket = tickets.size();
     sort(tickets.begin(), tickets.end());
     
     string Start = "ICN";
