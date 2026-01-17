@@ -35,9 +35,9 @@ vector<string> solution(vector<vector<string>> tickets)
 {
     sort(tickets.begin(), tickets.end());
     
-    string Start = "ICN";
-    answer.push_back(Start);
-    dfs(Start, tickets, 0);
+
+    answer.push_back("ICN");
+    dfs("ICN", tickets, 0);
     
     
     return answer;
